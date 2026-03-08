@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzFhMGExNCIvPgogIDx0ZXh0IHg9IjYiIHk9IjI0IiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zdHlsZT0iaXRhbGljIiBmaWxsPSIjZmY2YjhhIj5ELjwvdGV4dD4KPC9zdmc+">
+<title>Let's Talk Devika</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #f7f0e8; --pink: #ff6b8a; --pink-pale: #ffe0e8;
+    --lav: #b8a0ff; --lav-pale: #ede6ff; --yellow: #ffe566;
+    --ink: #1a0a14; --muted: #7a5060;
+  }
+  html { scroll-behavior: smooth; height: 100%; }
+  body {
+    background: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    color: white;
+    overflow-x: hidden;
+    cursor: none;
+    min-height: 100vh;
+  }
+
+  /* CURSOR */
+  .cursor {
+    width: 14px; height: 14px;
+    background: var(--lav);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    top: 0; left: 0;
+    will-change: transform;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    width: 38px; height: 38px;
+    border: 2px solid var(--lav);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    top: 0; left: 0;
+    will-change: transform;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+    transition: width 0.2s, height 0.2s, opacity 0.2s;
+  }
+
+  /* GRAIN */
+  body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.5; }
+
+  /* NAV */
+  nav { position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 48px;display:flex;align-items:center;justify-content:space-between; }
+  .nav-logo { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:white;text-decoration:none; }
+  .nav-logo span { color:var(--yellow); }
+  .nav-links { display:flex;gap:36px;list-style:none; }
+  .nav-links a { font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s; }
+  .nav-links a:hover { color:var(--yellow); }
+  .nav-links a.active { color:var(--yellow); }
+
+  /* BLOBS */
+  .blob { position:absolute;border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;pointer-events:none; }
+  @keyframes blobFloat { 0%,100%{border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;transform:translate(0,0)} 50%{border-radius:40% 60% 30% 70% / 60% 40% 70% 50%;transform:translate(8px,-12px)} }
+
+  /* MAIN LAYOUT */
+  .contact-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Rotating marquee text around edges - decorative */
+  .edge-text {
+    position: fixed;
+    font-family: 'Caveat', cursive;
+    font-size: 14px;
+    color: rgba(255,255,255,0.08);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .edge-top { top: 12px; left: 0; right: 0; text-align: center; }
+  .edge-bottom { bottom: 12px; left: 0; right: 0; text-align: center; }
+
+  /* BIG HEADLINE */
+  .contact-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 12vw, 11rem);
+    font-weight: 900;
+    line-height: 0.9;
+    color: white;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 2;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .contact-headline .line-1 { display: block; }
+  .contact-headline .line-2 { display: block; color: var(--yellow); font-style: italic; }
+  .contact-headline .line-3 { display: block; -webkit-text-stroke: 2px white; color: transparent; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+
+  /* LINKS ROW */
+  .contact-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 64px;
+    position: relative;
+    z-index: 2;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .cb-email {
+    background: var(--yellow);
+    color: var(--ink);
+    box-shadow: 4px 4px 0 rgba(255,230,102,0.3);
+  }
+  .cb-email:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 rgba(255,230,102,0.3); }
+
+  .cb-linkedin {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255,255,255,0.2);
+  }
+  .cb-linkedin:hover { border-color: var(--lav); color: var(--lav); }
+
+  .cb-resume {
+    background: var(--pink);
+    color: white;
+    box-shadow: 4px 4px 0 rgba(255,107,138,0.3);
+  }
+  .cb-resume:hover { transform: translate(-3px,-3px); box-shadow: 7px 7px 0 rgba(255,107,138,0.3); }
+
+  /* BOTTOM ROW */
+  .contact-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 32px;
+    position: relative;
+    z-index: 2;
+    animation: fadeUp 0.8s ease 0.35s both;
+  }
+
+  .contact-note {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.6;
+    max-width: 340px;
+    transform: rotate(-1deg);
+  }
+
+  .contact-note em { color: var(--yellow); font-style: normal; }
+
+  /* Fun availability card */
+  .avail-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .avail-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #4ade80;
+    flex-shrink: 0;
+    box-shadow: 0 0 12px #4ade80;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+  }
+
+  .avail-text { line-height: 1.4; }
+  .avail-text .av-label { font-family: 'Caveat', cursive; font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+  .avail-text .av-status { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1rem; color: white; }
+
+  /* Scribble annotations */
+  .scribble-1 {
+    position: absolute;
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    color: rgba(255,255,255,0.12);
+    transform: rotate(90deg);
+    right: 48px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    white-space: nowrap;
+    z-index: 1;
+    letter-spacing: 0.1em;
+  }
+
+  /* Large decorative number */
+  .deco-num {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 40vw;
+    font-weight: 900;
+    color: rgba(255,255,255,0.015);
+    line-height: 1;
+    top: 50%;
+    right: -5vw;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 0;
+    user-select: none;
+  }
+
+  /* MARQUEE STRIP */
+  .marquee-strip { width:100%;background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.06);padding:10px 0;overflow:hidden; }
+  .marquee-track { display:flex;gap:48px;animation:marquee 20s linear infinite;white-space:nowrap; }
+  .marquee-item { font-family:'Caveat',cursive;font-size:16px;color:rgba(255,255,255,0.3);flex-shrink:0;display:flex;align-items:center;gap:16px; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .contact-page { padding: 100px 24px 100px; }
+    .contact-headline { font-size: clamp(3rem, 15vw, 6rem); }
+    .contact-footer { padding: 14px 24px; }
+    .scribble-1 { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">D<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#work">work</a></li>
+    <li><a href="devika-about.html">about</a></li>
+    <li><a href="devika-contact.html" class="active">contact</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN -->
+<main class="contact-page">
+
+  <!-- Blobs -->
+  <div class="blob" style="width:600px;height:600px;background:var(--pink);opacity:0.04;top:-200px;left:-150px;animation:blobFloat 10s ease-in-out infinite;"></div>
+  <div class="blob" style="width:400px;height:400px;background:var(--lav);opacity:0.05;bottom:-100px;right:200px;animation:blobFloat 8s ease-in-out infinite reverse;"></div>
+  <div class="blob" style="width:250px;height:250px;background:var(--yellow);opacity:0.04;top:30%;left:40%;animation:blobFloat 12s ease-in-out infinite 2s;"></div>
+
+  <!-- Decorative big number -->
+  <div class="deco-num">✦</div>
+
+  <!-- Scribble on side -->
+  <div class="scribble-1">the kind of researcher your team is missing · tbh ✦</div>
+
+  <!-- BIG HEADLINE -->
+  <h1 class="contact-headline">
+    <span class="line-1">Let's</span>
+    <span class="line-2">actually</span>
+    <span class="line-3">talk.</span>
+  </h1>
+
+  <!-- LINKS -->
+  <div class="contact-links">
+    <a href="mailto:devikavaidya02@gmail.com" class="contact-btn cb-email">
+      <span>✉</span> say hello
+    </a>
+    <a href="https://www.linkedin.com/in/devika-vaidya/" target="_blank" class="contact-btn cb-linkedin">
+      <span>↗</span> LinkedIn
+    </a>
+    <a href="resume.pdf" target="_blank" class="contact-btn cb-resume">
+      <span>↓</span> download resume
+    </a>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="contact-bottom">
+    <div class="contact-note">
+      I'm looking for roles where research <em>actually changes things</em> not just gets presented in a deck and forgotten. If that sounds like your team, let's talk. ✦
+    </div>
+
+    <div class="avail-card">
+      <div class="avail-dot"></div>
+      <div class="avail-text">
+        <div class="av-label">current status</div>
+        <div class="av-status">Open to opportunities 🙂</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+
+
+<div class="marquee-strip">
+  <div class="marquee-track">
+    <span class="marquee-item">✦ open to work</span>
+    <span class="marquee-item">✦ ux researcher</span>
+    <span class="marquee-item">✦ sf bay area</span>
+    <span class="marquee-item">✦ let's make something real</span>
+    <span class="marquee-item">✦ devika vaidya · 2026</span>
+    <span class="marquee-item">✦ open to work</span>
+    <span class="marquee-item">✦ ux researcher</span>
+    <span class="marquee-item">✦ sf bay area</span>
+    <span class="marquee-item">✦ let's make something real</span>
+    <span class="marquee-item">✦ devika vaidya · 2026</span>
+  </div>
+</div>
+
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+
+  if (cursor && ring) {
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let rx = mx, ry = my;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+    });
+
+    function animateCursor() {
+      cursor.style.transform = `translate(${mx - 7}px, ${my - 7}px)`;
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.transform = `translate(${rx - 19}px, ${ry - 19}px)`;
+      requestAnimationFrame(animateCursor);
+    }
+    requestAnimationFrame(animateCursor);
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '20px';
+        cursor.style.height = '20px';
+        cursor.style.background = 'var(--yellow)';
+        ring.style.opacity = '0.8';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '14px';
+        cursor.style.height = '14px';
+        cursor.style.background = 'var(--lav)';
+        ring.style.opacity = '0.5';
+      });
+    });
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

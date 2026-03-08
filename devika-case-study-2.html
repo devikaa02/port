@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzFhMGExNCIvPgogIDx0ZXh0IHg9IjYiIHk9IjI0IiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zdHlsZT0iaXRhbGljIiBmaWxsPSIjZmY2YjhhIj5ELjwvdGV4dD4KPC9zdmc+">
+<title>Bosmos Case Study Devika</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=DM+Sans:wght@300;400;500;700&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #f7f0e8; --pink: #ff6b8a; --pink-pale: #ffe0e8;
+    --lav: #b8a0ff; --lav-pale: #ede6ff; --yellow: #ffe566;
+    --ink: #1a0a14; --muted: #7a5060;
+    --bosmos: #2d6a4f;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--ink); overflow-x: hidden; cursor: none; }
+  .cursor {
+    width: 14px; height: 14px;
+    background: var(--lav);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    top: 0; left: 0;
+    will-change: transform;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    width: 38px; height: 38px;
+    border: 2px solid var(--lav);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    top: 0; left: 0;
+    will-change: transform;
+    transform: translate(-50%, -50%);
+    opacity: 0.5;
+    transition: width 0.2s, height 0.2s, opacity 0.2s;
+  }
+  body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.5; }
+  nav { position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 48px;display:flex;align-items:center;justify-content:space-between; }
+  .nav-logo { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:white;text-decoration:none; }
+  .nav-logo span { color:var(--yellow); }
+  .nav-links { display:flex;gap:36px;list-style:none; }
+  .nav-links a { font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.6);text-decoration:none;transition:color 0.2s; }
+  .nav-links a:hover { color:var(--yellow); }
+  .blob { position:absolute;border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;pointer-events:none; }
+  @keyframes blobFloat { 0%,100%{border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;transform:translate(0,0)} 50%{border-radius:40% 60% 30% 70% / 60% 40% 70% 50%;transform:translate(8px,-12px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .reveal { opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease; }
+  .reveal.visible { opacity:1;transform:translateY(0); }
+
+  /* COMP ANALYSIS TABLE */
+  .comp-table { width:100%;border-collapse:collapse; }
+  .comp-table th { font-family:'Caveat',cursive;font-size:16px;padding:14px 18px;text-align:left;border-bottom:2px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5); }
+  .comp-table td { padding:16px 18px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:14px;color:rgba(255,255,255,0.75);line-height:1.5;vertical-align:top; }
+  .comp-table tr:last-child td { border-bottom:none; }
+  .comp-table tr:hover td { background:rgba(255,255,255,0.03); }
+  .platform-name { font-family:'Playfair Display',serif;font-weight:700;font-size:1rem;color:white;margin-bottom:3px; }
+  .platform-type { font-family:'Caveat',cursive;font-size:13px;color:rgba(255,255,255,0.35); }
+  .score-dot { display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px; }
+  .score-good { background:#4ade80; }
+  .score-mid { background:var(--yellow); }
+  .score-bad { background:var(--pink); }
+  .tag-good { background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2);padding:3px 10px;border-radius:100px;font-size:12px;font-weight:500; }
+  .tag-mid { background:rgba(255,230,102,0.12);color:var(--yellow);border:1px solid rgba(255,230,102,0.2);padding:3px 10px;border-radius:100px;font-size:12px;font-weight:500; }
+  .tag-bad { background:rgba(255,107,138,0.12);color:var(--pink);border:1px solid rgba(255,107,138,0.2);padding:3px 10px;border-radius:100px;font-size:12px;font-weight:500; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">D<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#work">work</a></li>
+    <li><a href="devika-about.html">about</a></li>
+    <li><a href="devika-contact.html">contact</a></li>
+  </ul>
+</nav>
+
+
+<!-- HERO -->
+<section style="min-height:100vh;background:var(--ink);padding:140px 48px 80px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
+  <div class="blob" style="width:500px;height:500px;background:#2d6a4f;opacity:0.08;top:-100px;right:-100px;animation:blobFloat 8s ease-in-out infinite;"></div>
+  <div class="blob" style="width:300px;height:300px;background:var(--lav);opacity:0.06;bottom:-60px;left:-60px;animation:blobFloat 10s ease-in-out infinite reverse;"></div>
+  <div style="position:relative;z-index:2;max-width:900px;">
+    
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;animation:fadeUp 0.6s ease 0.05s both;">
+      <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAORBMIDASIAAhEBAxEB/8QAHAABAAIDAQEBAAAAAAAAAAAAAAECBgcIBQQD/8QARhABAAIBAwIDBAcGAwUFCQAAAAECAwQFEQYhBxIxQVFhcQgTFCKB0eEjMkJSkcEVobFicpLC8CQ0Q6LSFhc2U1SCg5Px/8QAHAEBAAICAwEAAAAAAAAAAAAAAAECAwcEBQYI/8QALxEBAAEEAQMDAwMEAgMAAAAAAAECAwQRBQYhMRJBUQcTIhRxgTJhobEVMxdCUv/aAAwDAQACEQMRAD8A5xActwgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/9k=" style="width:56px;height:56px;border-radius:16px;object-fit:cover;" alt="Bosmos"/>
+      <div style="font-family:'Caveat',cursive;font-size:20px;color:rgba(255,255,255,0.4);transform:rotate(-2deg);">✦ case study 02 · Spring 2024 Internship · competitive research</div>
+    </div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5.5vw,5rem);font-weight:900;line-height:1.05;color:white;margin-bottom:28px;animation:fadeUp 0.6s ease 0.2s both;">
+      Mapping the<br>
+      <em style="color:#4ade80;font-style:italic;">competitive</em><br>
+      landscape for a<br>
+      <span style="-webkit-text-stroke:2px white;color:transparent;">startup with no map.</span>
+    </h1>
+    <p style="font-size:18px;color:rgba(255,255,255,0.5);line-height:1.7;max-width:600px;margin-bottom:48px;animation:fadeUp 0.6s ease 0.3s both;">At Bosmos an early-stage B2C community platform the brief was vague, the direction was unclear, and the product was still being figured out. My job was to make sense of the competitive landscape and tell the team what to build towards.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp 0.6s ease 0.4s both;">
+      <span style="padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;background:var(--yellow);color:var(--ink);">⏱ 16 weeks</span>
+      <span style="padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2);">🔍 Competitive Analysis</span>
+      <span style="padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;background:rgba(184,160,255,0.15);color:var(--lav);border:1px solid rgba(184,160,255,0.3);">📋 User Surveys</span>
+      <span style="padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);">🧪 Usability Testing</span>
+      <span style="padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);">👥 Team of 5</span>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT -->
+<section style="padding:100px 48px;background:var(--ink);position:relative;overflow:hidden;">
+  <div class="blob" style="width:500px;height:400px;background:var(--lav);opacity:0.05;top:-100px;right:-100px;"></div>
+  <div style="max-width:1100px;margin:0 auto;position:relative;z-index:2;">
+
+    <div class="reveal" style="font-family:'Caveat',cursive;font-size:20px;color:rgba(255,255,255,0.4);transform:rotate(-2deg);display:inline-block;margin-bottom:24px;">✦ what this project actually delivered</div>
+
+    <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4.5vw,3.6rem);font-weight:900;color:white;line-height:1.1;max-width:900px;margin-bottom:56px;">Bosmos had no research foundation. No competitive map. No clear direction. <em style="color:var(--lav);">I built all three.</em></h2>
+
+    <!-- 3 stat callouts -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:14px;">
+      <div class="reveal" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:36px;">
+        <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:var(--lav);line-height:1;">4</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:8px;line-height:1.6;">major platforms analysed in depth Reddit, LinkedIn, Dribbble, Behance none of which had been mapped for Bosmos before</div>
+      </div>
+      <div class="reveal" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:36px;">
+        <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:var(--yellow);line-height:1;">1</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:8px;line-height:1.6;">clear market gap identified the strong community + career growth quadrant that none of the competitors owned</div>
+      </div>
+      <div class="reveal" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:36px;">
+        <div style="font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:900;color:var(--pink);line-height:1;">0</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:8px;line-height:1.6;">existing research brief to start from. The scope, the questions, and the framework were all defined from scratch</div>
+      </div>
+    </div>
+
+    <!-- 2 impact cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="reveal" style="background:var(--lav-pale);border-radius:20px;padding:36px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:12px;">🗺 the tangible output</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:12px;">A research report and deck the team could actually use.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Before this project, Bosmos had no structured view of where they sat in the market. The deliverable was a full competitive analysis, opportunity matrix, synthesis board and 3 strategic directions packaged into a report that gave the team a map when they had none.</p>
+      </div>
+      <div class="reveal" style="background:var(--pink-pale);border-radius:20px;padding:36px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--pink);margin-bottom:12px;">💡 the harder skill on display</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:12px;">Defining the right questions before answering them.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">The brief was vague on purpose the product was still being figured out. The real work wasn't running the research. It was deciding what to research, why, and in what order. That kind of structured thinking in ambiguous environments is what separates junior researchers from senior ones.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTEXT -->
+<section style="padding:100px 48px;background:var(--yellow);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink);">The <span style="-webkit-text-stroke:2.5px var(--ink);color:transparent;">context</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);">what we were working with ✦</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div class="reveal" style="background:var(--ink);border-radius:20px;padding:36px;">
+        <div style="font-size:32px;margin-bottom:16px;">🌱</div>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--yellow);margin-bottom:8px;">the company</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white;line-height:1.4;margin-bottom:10px;">Bosmos LLC early stage startup</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;">A B2C community platform aiming to connect individuals with job opportunities, upskilling resources, and professional growth support.</div>
+      </div>
+      <div class="reveal" style="background:white;border-radius:20px;padding:36px;">
+        <div style="font-size:32px;margin-bottom:16px;">🤷</div>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--muted);margin-bottom:8px;">the challenge</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;">No clear brief. No defined scope.</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">The product was still being defined. We had to figure out what questions to ask before we could start answering them.</div>
+      </div>
+      <div class="reveal" style="background:var(--pink-pale);border-radius:20px;padding:36px;">
+        <div style="font-size:32px;margin-bottom:16px;">🎯</div>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--pink);margin-bottom:8px;">my role</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;">UX Researcher 1 of 5</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">Competitive analysis, user surveys, and usability testing on an early prototype. Jan–Apr 2024.</div>
+      </div>
+    </div>
+
+    <!-- Honest note -->
+    <div class="reveal" style="margin-top:24px;background:rgba(26,10,20,0.08);border-radius:20px;padding:32px;border-left:4px solid var(--ink);">
+      <div style="font-family:'Caveat',cursive;font-size:17px;color:var(--muted);margin-bottom:10px;">✦ a note on this case study</div>
+      <p style="font-size:15px;color:var(--ink);line-height:1.7;">This was my first real-world research internship. The project was ambiguous by nature an early-stage startup figuring itself out in real time. Rather than pretend that ambiguity didn't exist, I want to show how I navigated it. Learning to define your own brief when no one hands you one is, I'd argue, one of the most valuable research skills there is.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH QUESTION -->
+<section style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink);">The <span style="-webkit-text-stroke:2.5px var(--ink);color:transparent;">Questions</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);">what we needed to understand ✦</div>
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
+      <div class="reveal" style="background:var(--ink);border-radius:20px;padding:40px;">
+        <div style="font-family:'Caveat',cursive;font-size:17px;color:var(--yellow);margin-bottom:20px;">✦ guiding research questions</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,0.75);line-height:1.6;border-left:3px solid #4ade80;">What features do competitors excel at that create a positive user experience?</div>
+          <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,0.75);line-height:1.6;border-left:3px solid var(--lav);">How do users perceive these platforms in terms of usability and engagement?</div>
+          <div style="background:rgba(255,255,255,0.06);border-radius:12px;padding:16px 20px;font-size:15px;color:rgba(255,255,255,0.75);line-height:1.6;border-left:3px solid var(--pink);">What gaps exist in the market that Bosmos could address?</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="reveal" style="background:var(--lav-pale);border-radius:20px;padding:28px;flex:1;">
+          <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:8px;">platforms analysed</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+            <span style="background:white;border-radius:100px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--ink);">Reddit</span>
+            <span style="background:white;border-radius:100px;padding:6px 14px;font-size:13px;font-weight:600;color:#0077b5;">LinkedIn</span>
+            <span style="background:white;border-radius:100px;padding:6px 14px;font-size:13px;font-weight:600;color:#ea4c89;">Dribbble</span>
+            <span style="background:white;border-radius:100px;padding:6px 14px;font-size:13px;font-weight:600;color:#1769ff;">Behance</span>
+          </div>
+        </div>
+        <div class="reveal" style="background:var(--yellow);border-radius:20px;padding:28px;flex:1;">
+          <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--muted);margin-bottom:8px;">tools used</div>
+          <div style="font-size:14px;color:var(--ink);line-height:1.7;">Miro · SurveyMonkey · Google Trends · Notion</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETITIVE ANALYSIS -->
+<section style="padding:100px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:white;">Competitive <span style="-webkit-text-stroke:2.5px white;color:transparent;">Analysis</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.35);transform:rotate(-2deg);">reconstructed from research ✦</div>
+    </div>
+
+    <!-- Table -->
+    <div class="reveal" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;">
+      <table class="comp-table">
+        <thead>
+          <tr style="background:rgba(255,255,255,0.04);">
+            <th>Platform</th>
+            <th>Community</th>
+            <th>Job/Opportunity Discovery</th>
+            <th>Skill Building</th>
+            <th>Onboarding</th>
+            <th>Key Gap</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><div class="platform-name">Reddit</div><div class="platform-type">Community forum</div></td>
+            <td><span class="tag-good">Strong ✓</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Highly engaged niche communities</span></td>
+            <td><span class="tag-bad">Weak ✗</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">No formal job discovery</span></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Informal knowledge sharing only</span></td>
+            <td><span class="tag-bad">Weak ✗</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Overwhelming for new users</span></td>
+            <td style="font-size:13px;color:rgba(255,255,255,0.5);">No structured path from community → career growth</td>
+          </tr>
+          <tr>
+            <td><div class="platform-name">LinkedIn</div><div class="platform-type">Professional network</div></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Groups exist but feel hollow</span></td>
+            <td><span class="tag-good">Strong ✓</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Industry-leading job board</span></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">LinkedIn Learning exists but feels separate</span></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Profile setup is lengthy</span></td>
+            <td style="font-size:13px;color:rgba(255,255,255,0.5);">Community feels transactional, not supportive</td>
+          </tr>
+          <tr>
+            <td><div class="platform-name">Dribbble</div><div class="platform-type">Creative community</div></td>
+            <td><span class="tag-good">Strong ✓</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Strong creative identity</span></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Freelance & job board, niche</span></td>
+            <td><span class="tag-bad">Weak ✗</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">No formal upskilling</span></td>
+            <td><span class="tag-good">Strong ✓</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Visually intuitive</span></td>
+            <td style="font-size:13px;color:rgba(255,255,255,0.5);">Too niche limited to designers only</td>
+          </tr>
+          <tr>
+            <td><div class="platform-name">Behance</div><div class="platform-type">Portfolio platform</div></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Passive community</span></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Adobe Jobs integration</span></td>
+            <td><span class="tag-bad">Weak ✗</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">No upskilling features</span></td>
+            <td><span class="tag-mid">Partial ~</span><br><span style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:4px;display:block;">Portfolio-first, intimidating</span></td>
+            <td style="font-size:13px;color:rgba(255,255,255,0.5);">Showcasing over supporting growth</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="reveal" style="margin-top:14px;font-family:'Caveat',cursive;font-size:14px;color:rgba(255,255,255,0.25);text-align:right;">✦ visualisation reconstructed for illustrative purposes</div>
+  </div>
+</section>
+
+<!-- OPPORTUNITY MATRIX -->
+<section style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink);">Opportunity <span style="-webkit-text-stroke:2.5px var(--ink);color:transparent;">Matrix</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);">where does bosmos fit? ✦</div>
+    </div>
+
+    <div class="reveal" style="background:white;border-radius:24px;padding:48px;box-shadow:6px 6px 0 var(--lav);position:relative;">
+      <!-- Matrix grid -->
+      <div style="position:relative;width:100%;padding-bottom:60%;border:2px solid rgba(26,10,20,0.08);border-radius:12px;overflow:hidden;background:#faf7ff;">
+
+        <!-- Axis labels -->
+        <div style="position:absolute;top:50%;left:0;transform:translateY(-50%) rotate(-90deg);transform-origin:center;font-family:'Caveat',cursive;font-size:14px;color:var(--muted);white-space:nowrap;left:-32px;">← Weak Community · Strong Community →</div>
+        <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-family:'Caveat',cursive;font-size:14px;color:var(--muted);white-space:nowrap;">← Low Career Focus · High Career Focus →</div>
+
+        <!-- Axes -->
+        <div style="position:absolute;top:0;bottom:0;left:50%;width:1px;background:rgba(26,10,20,0.1);"></div>
+        <div style="position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(26,10,20,0.1);"></div>
+
+        <!-- Quadrant labels -->
+        <div style="position:absolute;top:12px;left:12px;font-family:'Caveat',cursive;font-size:12px;color:rgba(26,10,20,0.2);">Community, no career</div>
+        <div style="position:absolute;top:12px;right:12px;font-family:'Caveat',cursive;font-size:12px;color:rgba(26,10,20,0.2);text-align:right;">Sweet spot 🎯</div>
+        <div style="position:absolute;bottom:24px;left:12px;font-family:'Caveat',cursive;font-size:12px;color:rgba(26,10,20,0.2);">Neither</div>
+        <div style="position:absolute;bottom:24px;right:12px;font-family:'Caveat',cursive;font-size:12px;color:rgba(26,10,20,0.2);text-align:right;">Career, no community</div>
+
+        <!-- Platform dots -->
+        <!-- Reddit: strong community, low career -->
+        <div style="position:absolute;top:25%;left:75%;transform:translate(-50%,-50%);">
+          <div style="background:#ff4500;color:white;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:2px 2px 0 rgba(0,0,0,0.15);">Reddit</div>
+        </div>
+        <!-- LinkedIn: moderate community, high career -->
+        <div style="position:absolute;top:65%;left:80%;transform:translate(-50%,-50%);">
+          <div style="background:#0077b5;color:white;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:2px 2px 0 rgba(0,0,0,0.15);">LinkedIn</div>
+        </div>
+        <!-- Dribbble: moderate community, moderate career -->
+        <div style="position:absolute;top:40%;left:60%;transform:translate(-50%,-50%);">
+          <div style="background:#ea4c89;color:white;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:2px 2px 0 rgba(0,0,0,0.15);">Dribbble</div>
+        </div>
+        <!-- Behance: low community, moderate career -->
+        <div style="position:absolute;top:55%;left:35%;transform:translate(-50%,-50%);">
+          <div style="background:#1769ff;color:white;border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;white-space:nowrap;box-shadow:2px 2px 0 rgba(0,0,0,0.15);">Behance</div>
+        </div>
+        <!-- Bosmos: top right sweet spot -->
+        <div style="position:absolute;top:18%;left:82%;transform:translate(-50%,-50%);">
+          <div style="background:var(--ink);color:var(--yellow);border-radius:100px;padding:8px 16px;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:3px 3px 0 var(--yellow);border:2px solid var(--yellow);">Bosmos ✦</div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;font-family:'Caveat',cursive;font-size:16px;color:var(--muted);">✦ Bosmos has a clear opportunity in the top-right quadrant strong community AND high career focus. Nobody owns this space yet.</div>
+    </div>
+  </div>
+</section>
+
+<!-- MIRO BOARD / AFFINITY MAP -->
+<section style="padding:100px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:white;">Synthesis <span style="-webkit-text-stroke:2.5px white;color:transparent;">Board</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.35);transform:rotate(-2deg);">making sense of the mess ✦</div>
+    </div>
+
+    <!-- Miro-style board -->
+    <div class="reveal" style="background:#f8f3ff;border-radius:24px;padding:40px;position:relative;overflow:hidden;min-height:420px;box-shadow:inset 0 0 0 1px rgba(184,160,255,0.3);">
+
+      <!-- Grid background dots -->
+      <div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(184,160,255,0.3) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;"></div>
+
+      <!-- Board title -->
+      <div style="font-family:'Caveat',cursive;font-size:20px;color:var(--muted);margin-bottom:32px;position:relative;z-index:2;">📌 Competitive Insights Synthesis · Spring 2024</div>
+
+      <!-- Sticky notes cluster -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;z-index:2;">
+
+        <!-- Theme 1: Onboarding -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--muted);margin-bottom:4px;padding-left:4px;">🟡 Onboarding Pain</div>
+          <div style="background:#ffe566;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(-1deg);">"Reddit is overwhelming when you first join"</div>
+          <div style="background:#ffe566;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(1.5deg);">"LinkedIn profile setup takes forever"</div>
+          <div style="background:#ffd43b;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(-0.5deg);">"No clear starting point on Behance"</div>
+        </div>
+
+        <!-- Theme 2: Community -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--muted);margin-bottom:4px;padding-left:4px;">🟣 Community Quality</div>
+          <div style="background:#ede6ff;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(1deg);">"Reddit communities feel organic and real"</div>
+          <div style="background:#ede6ff;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(-1.5deg);">"LinkedIn feels transactional not genuine"</div>
+          <div style="background:#d8ccff;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(0.5deg);">"Dribbble has strong creative identity"</div>
+        </div>
+
+        <!-- Theme 3: Career -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--muted);margin-bottom:4px;padding-left:4px;">🩷 Career Growth</div>
+          <div style="background:#ffe0e8;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(-1.2deg);">"LinkedIn good for jobs, not for growth"</div>
+          <div style="background:#ffe0e8;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(2deg);">"Nobody connects community to career path"</div>
+          <div style="background:#ffccd8;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(-0.8deg);">"Upskilling always feels like an add-on"</div>
+        </div>
+
+        <!-- Theme 4: Opportunity -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--muted);margin-bottom:4px;padding-left:4px;">🟢 Opportunities</div>
+          <div style="background:#d1fae5;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(1.3deg);">"Guided onboarding = instant differentiator"</div>
+          <div style="background:#d1fae5;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(-1deg);">"Mentorship through community = untapped"</div>
+          <div style="background:#a7f3d0;border-radius:4px;padding:14px;font-size:13px;color:var(--ink);line-height:1.5;box-shadow:2px 3px 6px rgba(0,0,0,0.1);transform:rotate(0.7deg);">"Integrate learning into community feed"</div>
+        </div>
+
+      </div>
+      <div style="margin-top:20px;font-family:'Caveat',cursive;font-size:13px;color:rgba(26,10,20,0.3);position:relative;z-index:2;">✦ board recreated for illustrative purposes</div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY FINDINGS -->
+<section style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink);">What We <span style="-webkit-text-stroke:2.5px var(--ink);color:transparent;">Found</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);">the patterns that emerged ✦</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:14px;">
+
+      <div class="reveal" style="grid-column:span 12;background:var(--ink);border-radius:20px;padding:40px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;">
+          <div>
+            <div style="font-family:'Caveat',cursive;font-size:17px;color:#4ade80;margin-bottom:14px;">✦ the big gap</div>
+            <div style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.5vw,2rem);font-weight:700;line-height:1.3;color:white;margin-bottom:16px;">No platform does community AND career growth well at the same time.</div>
+            <div style="font-size:15px;color:rgba(255,255,255,0.5);line-height:1.7;">Reddit has community but no career path. LinkedIn has jobs but no real community. Dribbble and Behance are niche and passive. The gap Bosmos could fill was clear: a platform where professional growth happens <em style="color:white;">through</em> community, not despite it.</div>
+          </div>
+          <div style="font-family:'Caveat',cursive;font-size:20px;color:rgba(255,255,255,0.2);line-height:1.8;text-align:right;">"the gap was obvious<br>once we mapped it out.<br>nobody had filled it yet." ✦</div>
+        </div>
+      </div>
+
+      <div class="reveal" style="grid-column:span 4;background:var(--pink-pale);border-radius:20px;padding:36px;">
+        <div style="font-size:32px;margin-bottom:16px;">😤</div>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--pink);margin-bottom:10px;">pain point · found across all platforms</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;">Onboarding was overwhelming or intimidating</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">Users didn't know where to start. Platforms assumed too much prior knowledge.</div>
+      </div>
+
+      <div class="reveal" style="grid-column:span 4;background:var(--lav-pale);border-radius:20px;padding:36px;margin-top:20px;">
+        <div style="font-size:32px;margin-bottom:16px;">🤝</div>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:10px;">opportunity · consistent signal</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;">Users wanted support, not just exposure</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">LinkedIn shows jobs but doesn't help you get them. Users wanted mentorship, feedback, and community support not just a job board.</div>
+      </div>
+
+      <div class="reveal" style="grid-column:span 4;background:var(--yellow);border-radius:20px;padding:36px;">
+        <div style="font-size:32px;margin-bottom:16px;">📚</div>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--muted);margin-bottom:10px;">gap · nobody owns this</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:10px;">Skill-building is always an afterthought</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">Every platform we analysed had learning features that felt bolted on. Integrating upskilling into community was a clear opportunity.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW MIGHT WE -->
+<section style="padding:100px 48px;background:var(--yellow);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink);">How Might <span style="-webkit-text-stroke:2.5px var(--ink);color:transparent;">We...</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);">turning findings into directions ✦</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="reveal" style="background:var(--ink);border-radius:20px;padding:36px;display:flex;gap:20px;align-items:flex-start;">
+        <div style="font-size:32px;flex-shrink:0;">🚪</div>
+        <div>
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:rgba(255,255,255,0.35);margin-bottom:10px;">from: overwhelming onboarding</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:white;line-height:1.4;">How might we design an onboarding experience that meets users where they are not where we assume they are?</div>
+        </div>
+      </div>
+      <div class="reveal" style="background:white;border-radius:20px;padding:36px;display:flex;gap:20px;align-items:flex-start;margin-top:20px;">
+        <div style="font-size:32px;flex-shrink:0;">🤝</div>
+        <div>
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--muted);margin-bottom:10px;">from: transactional community feeling</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;">How might we build a community where professional support feels natural not performative?</div>
+        </div>
+      </div>
+      <div class="reveal" style="background:var(--pink-pale);border-radius:20px;padding:36px;display:flex;gap:20px;align-items:flex-start;">
+        <div style="font-size:32px;flex-shrink:0;">📈</div>
+        <div>
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--pink);margin-bottom:10px;">from: career features feel bolted on</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;">How might we make career growth feel like a natural outcome of being part of the community?</div>
+        </div>
+      </div>
+      <div class="reveal" style="background:var(--lav-pale);border-radius:20px;padding:36px;display:flex;gap:20px;align-items:flex-start;margin-top:20px;">
+        <div style="font-size:32px;flex-shrink:0;">🎓</div>
+        <div>
+          <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--lav);margin-bottom:10px;">from: upskilling as an afterthought</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.4;">How might we weave skill-building into daily community interactions rather than isolating it as a separate feature?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECOMMENDATIONS -->
+<section style="padding:100px 48px;background:var(--lav-pale);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px;">
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink);">So <span style="-webkit-text-stroke:2.5px var(--ink);color:transparent;">What?</span></h2>
+      <div style="font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);">what we told the team ✦</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+      <div class="reveal" style="background:var(--ink);border-radius:20px;padding:32px;">
+        <span style="font-size:28px;margin-bottom:14px;display:block;">🚀</span>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--yellow);margin-bottom:8px;">recommendation 01</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:white;line-height:1.4;margin-bottom:8px;">Prioritise guided onboarding</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.5);line-height:1.6;">Every competitor failed here. A warm, goal-oriented onboarding flow would immediately differentiate Bosmos.</div>
+      </div>
+      <div class="reveal" style="background:white;border-radius:20px;padding:32px;">
+        <span style="font-size:28px;margin-bottom:14px;display:block;">💬</span>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--muted);margin-bottom:8px;">recommendation 02</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:8px;">Build community around growth, not just networking</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">Users don't want another LinkedIn. They want a place where people actively help each other grow not just connect.</div>
+      </div>
+      <div class="reveal" style="background:var(--pink-pale);border-radius:20px;padding:32px;">
+        <span style="font-size:28px;margin-bottom:14px;display:block;">🎓</span>
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--pink);margin-bottom:8px;">recommendation 03</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:8px;">Integrate skills natively, not as a feature</div>
+        <div style="font-size:14px;color:var(--muted);line-height:1.6;">Upskilling should be woven into the community experience not a separate tab you visit once.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION -->
+<section style="padding:100px 48px;background:var(--ink);text-align:center;position:relative;overflow:hidden;">
+  <div class="blob" style="width:500px;height:400px;background:#2d6a4f;opacity:0.06;top:-100px;left:-100px;"></div>
+  <div class="blob" style="width:400px;height:300px;background:var(--lav);opacity:0.06;bottom:-80px;right:-80px;"></div>
+  <div class="reveal" style="font-family:'Caveat',cursive;font-size:20px;color:rgba(255,255,255,0.4);transform:rotate(-1deg);display:inline-block;margin-bottom:20px;">✦ what I actually learned</div>
+  <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3.2rem);font-weight:700;font-style:italic;color:white;line-height:1.4;max-width:800px;margin:0 auto 32px;position:relative;z-index:2;">The hardest brief is no brief. But it's also where the most <em style="color:#4ade80;">important</em> research decisions get made.</h2>
+  <p class="reveal" style="font-size:16px;color:rgba(255,255,255,0.45);line-height:1.8;max-width:600px;margin:0 auto 48px;position:relative;z-index:2;">This internship taught me that defining the right questions is often harder and more valuable than answering them. In ambiguous environments, a researcher who can create structure from chaos is an asset. I want to keep being that researcher.</p>
+  
+</section>
+
+<!-- NEXT -->
+<section style="padding:80px 48px;background:var(--pink);display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;">
+  <div>
+    <span style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.7);margin-bottom:8px;display:block;">✦ next case study</span>
+    <h3 style="font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.5rem);font-weight:900;color:white;line-height:1.1;">HemoConnect: A Unified<br>Blood Supply Portal →</h3>
+  </div>
+  <a href="devika-case-study-3.html" style="display:inline-block;background:white;color:var(--pink);font-weight:700;font-size:15px;padding:16px 36px;border-radius:100px;text-decoration:none;box-shadow:4px 4px 0 rgba(0,0,0,0.1);">View project →</a>
+</section>
+
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  if (cursor && ring) {
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my;
+    window.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+      cursor.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
+    });
+    (function tick() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
+      requestAnimationFrame(tick);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(1.8)';
+        cursor.style.background = 'var(--lav)';
+        ring.style.opacity = '0.8';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+        cursor.style.background = 'var(--lav)';
+        ring.style.opacity = '0.5';
+      });
+    });
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
