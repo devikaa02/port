@@ -505,6 +505,7 @@
   /* Card 1 specific */
   .case-card-1 .card-label { color: var(--yellow); }
   .case-card-1 .card-title { color: white; }
+  .case-card-1 .card-num { color: white; opacity: 0.15; }
 
   /* Card 2 specific */
   .case-card-2 .card-label { color: var(--lav); }
@@ -517,6 +518,7 @@
   /* Card 4 specific */
   .case-card-4 .card-label { color: rgba(255,255,255,0.4); }
   .case-card-4 .card-title { color: white; }
+  .case-card-4 .card-num { color: white; opacity: 0.15; }
 
   /* ---- ABOUT SNIPPET ---- */
   .about-section {
@@ -845,6 +847,267 @@
     transform: translateY(0);
   }
 
+  /* ---- CARD DIRECTIONAL REVEALS ---- */
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-48px) rotate(-1deg);
+    transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(48px) rotate(1deg);
+    transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal-left.visible,
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg);
+  }
+
+  /* ---- TYPEWRITER WORD CYCLE ---- */
+  .word-cycle {
+    display: inline-block;
+    position: relative;
+    color: var(--pink);
+    font-style: italic;
+    min-width: 280px;
+  }
+
+  .word-cycle .word {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    white-space: nowrap;
+    color: var(--pink);
+    font-style: italic;
+  }
+
+  .word-cycle .word.active {
+    opacity: 1;
+    transform: translateY(0);
+    position: relative;
+  }
+
+  .word-cycle .word.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+    position: absolute;
+  }
+
+  /* ---- SVG DRAW-IN UNDERLINE ---- */
+  .draw-underline {
+    position: relative;
+    display: inline-block;
+  }
+
+  .draw-underline svg {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .draw-underline path {
+    stroke: var(--lav);
+    stroke-width: 3;
+    fill: none;
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    stroke-linecap: round;
+  }
+
+  .draw-underline.drawn path {
+    transition: stroke-dashoffset 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s;
+    stroke-dashoffset: 0;
+  }
+
+  /* ---- HERO FLOAT PARALLAX ---- */
+  .hero-float {
+    transition: transform 0.1s ease-out;
+    will-change: transform;
+  }
+
+  /* ---- MARQUEE PAUSE ON HOVER ---- */
+  .marquee-track:hover { animation-play-state: paused; }
+
+  /* ---- CARD SHIMMER ON HOVER ---- */
+  .case-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .case-card:hover::after { opacity: 1; }
+
+  /* ---- NAV (no scroll effect) ---- */
+
+  /* ---- SQUIGGLE DRAW ---- */
+  .squiggle-wrap::after {
+    background-size: 120px 8px;
+    background-position: 0 0;
+    animation: squiggle-draw 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.8s both;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  @keyframes squiggle-draw {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0% 0 0); }
+  }
+
+  /* ---- STAGGER DELAY UTILITIES ---- */
+  .delay-1 { transition-delay: 0.08s !important; }
+  .delay-2 { transition-delay: 0.16s !important; }
+  .delay-3 { transition-delay: 0.24s !important; }
+  .delay-4 { transition-delay: 0.32s !important; }
+
+  /* ---- PAGE LOAD CURTAIN ---- */
+  #load-curtain {
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ink);
+    transition: opacity 0.7s ease 0.3s, visibility 0.7s ease 0.3s;
+  }
+  #load-curtain.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+  .curtain-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 5rem);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--pink);
+    overflow: hidden;
+    display: flex;
+    gap: 0.08em;
+  }
+  .curtain-letter {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: curtainUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes curtainUp {
+    to { transform: translateY(0); }
+  }
+  .curtain-dot {
+    color: var(--lav);
+    animation: curtainUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+  }
+
+  /* ---- MAGNETIC BUTTON ---- */
+  .btn-primary {
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s !important;
+  }
+
+  /* ---- BLOB MORPH UPGRADE ---- */
+  .blob-hero-1 { animation: blobFloat 8s ease-in-out infinite, blobPulse 4s ease-in-out infinite; }
+  @keyframes blobPulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* ---- CARD TILT (3D) ---- */
+  .case-card { transform-style: preserve-3d; }
+  .case-card .card-inner-content { transition: transform 0.3s ease; }
+
+  /* ---- SECTION TITLE SCRAMBLE ---- */
+  .section-title { cursor: default; }
+
+  /* ---- ABOUT BENTO HOVER LIFT ---- */
+  .ab-card {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+    cursor: default;
+  }
+  .ab-card:hover {
+    transform: translateY(-6px) rotate(-0.5deg);
+    box-shadow: 0 16px 40px rgba(26,10,20,0.12);
+  }
+  .ab-1:hover { box-shadow: 0 16px 40px rgba(255,107,138,0.2); }
+  .ab-2:hover { box-shadow: 0 16px 40px rgba(184,160,255,0.2); }
+  .ab-3:hover { box-shadow: 0 16px 40px rgba(255,229,102,0.3); }
+
+  /* ---- TESTIMONIAL CARD TILT ---- */
+  .testi-card {
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease !important;
+    transform-style: preserve-3d;
+  }
+
+  /* ---- FOOTER "LET'S TALK" HOVER ---- */
+  .footer-left h2 .pink {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), letter-spacing 0.3s ease;
+  }
+  .footer-left h2:hover .pink {
+    transform: rotate(-3deg) scale(1.05);
+    letter-spacing: 0.02em;
+  }
+
+  /* ---- NOISE CANVAS ---- */
+  #noise-canvas {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 1001;
+    opacity: 0.025;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---- SCROLL PROGRESS BAR ---- */
+  #scroll-bar {
+    position: fixed; top: 0; left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink), var(--lav));
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 99998;
+    transition: transform 0.05s linear;
+  }
+
+  /* ---- CURSOR TRAIL DOTS ---- */
+  .trail-dot {
+    position: fixed;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9997;
+    top: 0; left: 0;
+    opacity: 0;
+    transform: translate(-50%,-50%);
+    transition: opacity 0.2s;
+  }
+
+  /* ---- NAV LOGO BOUNCE ---- */
+  .nav-logo {
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1) !important;
+  }
+  .nav-logo:hover { transform: scale(1.15) rotate(-3deg) !important; }
+
+  /* ---- MARQUEE SPEED UP ON HOVER ---- */
+  .marquee-section:hover .marquee-track { animation-duration: 8s; }
+  .marquee-section:hover .marquee-track-reverse { animation-duration: 10s; }
+
+  /* ---- SECTION ENTRANCE: CLIP WIPE ---- */
+  .wipe-in {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .wipe-in.visible { clip-path: inset(0 0% 0 0); }
+
+  /* ---- CARD HOVER GLOW ---- */
+  .case-card-1:hover { box-shadow: 8px 8px 0 var(--pink), 0 0 40px rgba(255,107,138,0.2) !important; }
+  .case-card-4:hover { box-shadow: 8px 8px 0 var(--lav), 0 0 40px rgba(184,160,255,0.2) !important; }
+
   /* ---- RESPONSIVE ---- */
   @media (max-width: 900px) {
     nav { padding: 20px 24px; }
@@ -861,6 +1124,19 @@
 </style>
 </head>
 <body>
+
+<!-- Load curtain -->
+<div id="load-curtain">
+  <div class="curtain-text">
+    <span class="curtain-letter" style="animation-delay:0s">D</span><span class="curtain-letter" style="animation-delay:0.06s">e</span><span class="curtain-letter" style="animation-delay:0.12s">v</span><span class="curtain-letter" style="animation-delay:0.18s">i</span><span class="curtain-letter" style="animation-delay:0.24s">k</span><span class="curtain-letter" style="animation-delay:0.3s">a</span><span class="curtain-dot">.</span>
+  </div>
+</div>
+
+<!-- Scroll progress bar -->
+<div id="scroll-bar"></div>
+
+<!-- Noise canvas -->
+<canvas id="noise-canvas"></canvas>
 
 <!-- Custom cursor -->
 <div class="cursor" id="cursor"></div>
@@ -888,8 +1164,8 @@
     <h1 class="hero-headline">
       Good research<br>
       is just being <span class="squiggle-wrap pink">genuinely</span><br>
-      <span class="stroke">curious</span> about people.<br>
-      <span class="lav" style="font-size:0.65em;font-weight:400;font-style:italic">I take that very seriously.</span>
+      <span class="draw-underline stroke" id="curious-word">curious<svg viewBox="0 0 200 12" preserveAspectRatio="none"><path d="M4 6 Q50 2 100 6 Q150 10 196 6" /></svg></span> about people.<br>
+      <span class="lav" style="font-size:0.65em;font-weight:400;font-style:italic">I take that <span class="word-cycle" id="word-cycle"><span class="word active">very seriously.</span><span class="word">deeply personally.</span><span class="word">rather obsessively.</span><span class="word">quite literally.</span></span></span>
     </h1>
 
     <p class="hero-sub">Hi, I'm Devika. I research the gap between what products assume and how people actually live.</p>
@@ -980,9 +1256,9 @@
         <div style="flex:1;">
           <div class="card-num" style="margin-bottom:8px;">02</div>
           <div class="card-label">✦ co-design · brand strategy</div>
-          <h3 class="card-title">Bosmos Brand identity and co-design strategy for a community platform startup</h3>
+          <h3 class="card-title">Bosmos Brand identity and co-design strategy for a wellness startup</h3>
           <div class="card-tags">
-            <span class="ctag ctag-ink">Spring 2024 Internship</span>
+            <span class="ctag ctag-ink">Spring 2023 Internship</span>
             <span class="ctag ctag-ink">Co-Design</span>
             <span class="ctag ctag-ink">Brand Strategy</span>
           </div>
@@ -1042,7 +1318,7 @@
     </a>
 
     <!-- Coming soon -->
-    <div class="case-card case-card-5 reveal" style="cursor:default;">
+    <div class="case-card case-card-5 reveal delay-1" style="cursor:default;">
       <div class="card-num" style="color:var(--ink);">✦</div>
       <div>
         <div class="card-label" style="color:rgba(26,10,20,0.5);">always learning</div>
@@ -1165,56 +1441,249 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>designed & built with a lot of heart ♡ · 2026</span>
+    <span>designed & built with a lot of feelings · 2026</span>
     <span>Devika ✦</span>
   </div>
 </footer>
 <script>
-  // Custom cursor
+  /* ── Custom cursor ── */
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursor-ring');
   if (cursor && ring) {
     let mx = window.innerWidth/2, my = window.innerHeight/2;
     let rx = mx, ry = my;
     window.addEventListener('mousemove', e => {
-      mx = e.clientX;
-      my = e.clientY;
+      mx = e.clientX; my = e.clientY;
       cursor.style.transform = `translate(calc(${mx}px - 50%), calc(${my}px - 50%))`;
     });
     (function tick() {
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
       ring.style.transform = `translate(calc(${rx}px - 50%), calc(${ry}px - 50%))`;
       requestAnimationFrame(tick);
     })();
     document.querySelectorAll('a, button').forEach(el => {
       el.addEventListener('mouseenter', () => {
-        cursor.style.width = '20px';
-        cursor.style.height = '20px';
+        cursor.style.width = '22px'; cursor.style.height = '22px';
         cursor.style.background = 'var(--pink)';
-        ring.style.opacity = '0.8';
+        ring.style.opacity = '0.8'; ring.style.width = '48px'; ring.style.height = '48px';
       });
       el.addEventListener('mouseleave', () => {
-        cursor.style.width = '14px';
-        cursor.style.height = '14px';
+        cursor.style.width = '14px'; cursor.style.height = '14px';
         cursor.style.background = 'var(--lav)';
-        ring.style.opacity = '0.5';
+        ring.style.opacity = '0.5'; ring.style.width = '38px'; ring.style.height = '38px';
       });
     });
   }
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
+  /* ── Scroll reveal (base + directional) ── */
+  const revealAll = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.classList.add('visible');
-        }, i * 80);
+        const base = parseInt(entry.target.dataset.delay || 0);
+        setTimeout(() => entry.target.classList.add('visible'), base + i * 70);
+        revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+  }, { threshold: 0.12 });
+  revealAll.forEach(el => revealObserver.observe(el));
+
+  /* ── Apply directional reveals to work cards ── */
+  document.querySelectorAll('.case-card').forEach((card, i) => {
+    if (card.classList.contains('case-card-5')) return;
+    card.classList.remove('reveal');
+    // odd-indexed cards come from left, even from right
+    card.classList.add(i % 2 === 0 ? 'reveal-left' : 'reveal-right');
+    card.dataset.delay = i * 60;
+    revealObserver.observe(card);
+  });
+
+  /* ── Draw-in SVG underline under "curious" ── */
+  const curiousEl = document.getElementById('curious-word');
+  if (curiousEl) {
+    const drawObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          setTimeout(() => curiousEl.classList.add('drawn'), 600);
+          drawObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    drawObserver.observe(curiousEl);
+  }
+
+  /* ── Word cycle in hero ── */
+  const cycleEl = document.getElementById('word-cycle');
+  if (cycleEl) {
+    const words = cycleEl.querySelectorAll('.word');
+    let current = 0;
+    setInterval(() => {
+      words[current].classList.remove('active');
+      words[current].classList.add('exit');
+      const prev = current;
+      setTimeout(() => words[prev].classList.remove('exit'), 450);
+      current = (current + 1) % words.length;
+      words[current].classList.add('active');
+    }, 2800);
+  }
+
+  /* ── Hero float parallax on mouse ── */
+  const heroFloat = document.querySelector('.hero-float');
+  const heroSection = document.querySelector('.hero');
+  if (heroFloat && heroSection) {
+    heroSection.addEventListener('mousemove', e => {
+      const rect = heroSection.getBoundingClientRect();
+      const cx = rect.width / 2, cy = rect.height / 2;
+      const dx = (e.clientX - rect.left - cx) / cx;
+      const dy = (e.clientY - rect.top - cy) / cy;
+      heroFloat.style.transform = `translateY(calc(-50% + ${dy * 14}px)) translateX(${dx * 10}px) rotate(${dx * 2}deg)`;
+    });
+    heroSection.addEventListener('mouseleave', () => {
+      heroFloat.style.transform = 'translateY(-50%)';
+    });
+  }
+
+  /* ── Page load curtain ── */
+  window.addEventListener('load', () => {
+    const curtain = document.getElementById('load-curtain');
+    if (curtain) setTimeout(() => curtain.classList.add('gone'), 900);
+  });
+
+  /* ── Scroll progress bar ── */
+  const scrollBar = document.getElementById('scroll-bar');
+  if (scrollBar) {
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+      scrollBar.style.transform = `scaleX(${pct})`;
+    }, { passive: true });
+  }
+
+  /* ── Animated noise canvas ── */
+  (function() {
+    const canvas = document.getElementById('noise-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let w, h, frame = 0;
+    function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    function drawNoise() {
+      const imageData = ctx.createImageData(w, h);
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const v = Math.random() * 255 | 0;
+        data[i] = data[i+1] = data[i+2] = v;
+        data[i+3] = 18;
+      }
+      ctx.putImageData(imageData, 0, 0);
+      frame++;
+      if (frame % 3 === 0) requestAnimationFrame(drawNoise);
+      else setTimeout(() => requestAnimationFrame(drawNoise), 50);
+    }
+    drawNoise();
+  })();
+
+  /* ── Cursor trail ── */
+  (function() {
+    const colors = ['#ff6b8a','#b8a0ff','#ffe566','#ff6b8a','#b8a0ff'];
+    const pool = [];
+    for (let i = 0; i < 8; i++) {
+      const d = document.createElement('div');
+      d.className = 'trail-dot';
+      d.style.background = colors[i % colors.length];
+      document.body.appendChild(d);
+      pool.push({ el: d, x: 0, y: 0, life: 0 });
+    }
+    let trailX = 0, trailY = 0, tick = 0;
+    window.addEventListener('mousemove', e => { trailX = e.clientX; trailY = e.clientY; });
+    let lastSpawn = 0;
+    function animTrail(ts) {
+      if (ts - lastSpawn > 40) {
+        lastSpawn = ts;
+        const dot = pool[tick % pool.length];
+        dot.el.style.left = trailX + 'px';
+        dot.el.style.top  = trailY + 'px';
+        dot.el.style.opacity = '0.7';
+        dot.el.style.transform = 'translate(-50%,-50%) scale(1)';
+        dot.el.style.transition = 'none';
+        void dot.el.offsetWidth;
+        dot.el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        dot.el.style.opacity = '0';
+        dot.el.style.transform = 'translate(-50%,-50%) scale(0.2)';
+        tick++;
+      }
+      requestAnimationFrame(animTrail);
+    }
+    requestAnimationFrame(animTrail);
+  })();
+
+  /* ── 3D card tilt on hover ── */
+  document.querySelectorAll('.case-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `translate(-4px,-4px) perspective(600px) rotateY(${x * 8}deg) rotateX(${-y * 6}deg)`;
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      card.style.transition = 'transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease';
+    });
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'transform 0.1s ease, box-shadow 0.3s ease';
+    });
+  });
+
+  /* ── Testimonial 3D tilt ── */
+  document.querySelectorAll('.testi-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform = `translateY(-6px) perspective(500px) rotateY(${x * 7}deg) rotateX(${-y * 5}deg)`;
+    });
+    card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+  });
+
+  /* ── Magnetic primary button ── */
+  document.querySelectorAll('.btn-primary').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width/2)  * 0.35;
+      const y = (e.clientY - r.top  - r.height/2) * 0.35;
+      btn.style.transform = `translate(calc(-2px + ${x}px), calc(-2px + ${y}px))`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s';
+      btn.style.transform = '';
+    });
+    btn.addEventListener('mouseenter', () => {
+      btn.style.transition = 'transform 0.1s ease, box-shadow 0.2s';
+    });
+  });
+
+  /* ── Section title letter scramble on hover ── */
+  function scramble(el) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ!?✦★';
+    const original = el.textContent;
+    let iter = 0;
+    const interval = setInterval(() => {
+      el.textContent = original.split('').map((ch, i) => {
+        if (i < iter || ch === ' ') return ch;
+        return chars[Math.floor(Math.random() * chars.length)];
+      }).join('');
+      iter += 0.6;
+      if (iter >= original.length) { el.textContent = original; clearInterval(interval); }
+    }, 40);
+  }
+  document.querySelectorAll('.section-title').forEach(title => {
+    title.addEventListener('mouseenter', () => {
+      const plain = title.querySelector('.stroke');
+      if (plain) scramble(plain);
+      else scramble(title);
+    });
+  });
 </script>
 </body>
 </html>
