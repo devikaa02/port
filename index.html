@@ -436,9 +436,15 @@
   }
 
   .case-card-4:hover { box-shadow: 8px 8px 0 var(--lav); }
-  .case-card-5 { grid-column: span 12; background: var(--yellow); box-shadow: none; }
-  .case-card-5 .card-label { color: rgba(26,10,20,0.5); }
-  .case-card-5 .card-title { color: var(--ink); }
+  .case-card-5 { grid-column: span 7; background: var(--ink); box-shadow: 0 0 0 0 #5EF38C; }
+  .case-card-5:hover { box-shadow: 8px 8px 0 #5EF38C; }
+  .case-card-5 .card-label { color: #5EF38C; }
+  .case-card-5 .card-title { color: white; }
+  .case-card-5 .card-num { color: white; opacity: 0.15; }
+
+  .case-card-6 { grid-column: span 5; background: var(--yellow); box-shadow: none; }
+  .case-card-6 .card-label { color: rgba(26,10,20,0.5); }
+  .case-card-6 .card-title { color: var(--ink); }
 
   .card-num {
     font-family: 'Playfair Display', serif;
@@ -1107,6 +1113,7 @@
   /* ---- CARD HOVER GLOW ---- */
   .case-card-1:hover { box-shadow: 8px 8px 0 var(--pink), 0 0 40px rgba(255,107,138,0.2) !important; }
   .case-card-4:hover { box-shadow: 8px 8px 0 var(--lav), 0 0 40px rgba(184,160,255,0.2) !important; }
+  .case-card-5:hover { box-shadow: 8px 8px 0 #5EF38C, 0 0 40px rgba(94,243,140,0.2) !important; }
 
   /* ---- RESPONSIVE ---- */
   @media (max-width: 900px) {
@@ -1115,7 +1122,7 @@
     .hero-float { display: none; }
     .work-section, .about-section, .testimonials-section, footer { padding: 60px 24px; }
     .work-grid { grid-template-columns: 1fr; }
-    .case-card-1, .case-card-2, .case-card-3, .case-card-4, .case-card-5 { grid-column: span 1; }
+    .case-card-1, .case-card-2, .case-card-3, .case-card-4, .case-card-5, .case-card-6 { grid-column: span 1; }
     .about-inner { grid-template-columns: 1fr; gap: 40px; }
     .testimonials-grid { grid-template-columns: 1fr; }
     .testi-card:nth-child(2) { margin-top: 0; }
@@ -1321,8 +1328,33 @@
       </div>
     </a>
 
+    <!-- Case Study 5 -->
+    <a href="devika-case-study-5.html" class="case-card case-card-5 reveal">
+      <div style="display:flex;align-items:center;gap:24px;width:100%;flex-wrap:wrap;">
+        <div style="flex:1;min-width:220px;">
+          <div class="card-num" style="margin-bottom:8px;">05</div>
+          <div class="card-label">✦ quantitative ux research · conjoint analysis</div>
+          <h3 class="card-title">Trust Signals What actually makes people trust a P2P payment app — a choice-based conjoint study</h3>
+          <div class="card-tags">
+            <span class="ctag ctag-white">Quantitative Research</span>
+            <span class="ctag ctag-white">Choice-Based Conjoint</span>
+            <span class="ctag ctag-white">Hierarchical Bayes</span>
+            <span class="ctag" style="background:rgba(94,243,140,0.15);color:#5EF38C;border:1px solid rgba(94,243,140,0.3);">Personal Project</span>
+          </div>
+        </div>
+        <div style="flex-shrink:0;width:220px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px;">
+          <div style="font-family:'Caveat',cursive;font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:14px;">relative trust importance</div>
+          <div style="font-size:11px;color:white;margin-bottom:5px;display:flex;justify-content:space-between;"><span>Recipient name</span><span style="color:#5EF38C;font-weight:700;">38.4%</span></div>
+          <div style="height:8px;background:rgba(255,255,255,0.08);border-radius:100px;margin-bottom:14px;overflow:hidden;"><div style="width:100%;height:100%;background:linear-gradient(90deg,#b8a0ff,#ff6b8a);border-radius:100px;"></div></div>
+          <div style="font-size:11px;color:white;margin-bottom:5px;display:flex;justify-content:space-between;"><span>Security badge</span><span style="color:#ff6b8a;font-weight:700;">7.1%</span></div>
+          <div style="height:8px;background:rgba(255,255,255,0.08);border-radius:100px;overflow:hidden;"><div style="width:18.5%;height:100%;background:#ff6b8a;border-radius:100px;"></div></div>
+        </div>
+        <div class="card-arrow" style="background:#5EF38C;color:var(--ink);">→</div>
+      </div>
+    </a>
+
     <!-- Coming soon -->
-    <div class="case-card case-card-5 reveal delay-1" style="cursor:default;">
+    <div class="case-card case-card-6 reveal delay-1" style="cursor:default;">
       <div class="card-num" style="color:var(--ink);">✦</div>
       <div>
         <div class="card-label" style="color:rgba(26,10,20,0.5);">always learning</div>
@@ -1494,7 +1526,7 @@
 
   /* ── Apply directional reveals to work cards ── */
   document.querySelectorAll('.case-card').forEach((card, i) => {
-    if (card.classList.contains('case-card-5')) return;
+    if (card.classList.contains('case-card-6')) return;
     card.classList.remove('reveal');
     // odd-indexed cards come from left, even from right
     card.classList.add(i % 2 === 0 ? 'reveal-left' : 'reveal-right');
