@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iOCIgZmlsbD0iIzFhMGExNCIvPgogIDx0ZXh0IHg9IjYiIHk9IjI0IiBmb250LWZhbWlseT0iR2VvcmdpYSxzZXJpZiIgZm9udC1zaXplPSIyMiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zdHlsZT0iaXRhbGljIiBmaWxsPSIjZmY2YjhhIj5ELjwvdGV4dD4KPC9zdmc+">
+<title>Meditation Retention · UX Research Case Study</title>
+<template id="__bundler_thumbnail" data-bg-color="#1a0a14">
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+<rect width="120" height="120" fill="#1a0a14"/>
+<text x="30" y="80" font-family="Georgia,serif" font-size="60" font-weight="900" font-style="italic" fill="#ff6b8a">D.</text>
+</svg>
+</template>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=Caveat:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  :root {
+    --cream:#f7f0e8; --pink:#ff6b8a; --pink-pale:#ffe0e8;
+    --lav:#b8a0ff; --lav-pale:#ede6ff; --yellow:#ffe566;
+    --green:#5EF38C;
+    --ink:#1a0a14; --muted:#7a5060;
+    --mono:'JetBrains Mono', monospace;
+  }
+  html { scroll-behavior:smooth; }
+  body { background:var(--cream);font-family:'DM Sans',sans-serif;color:var(--ink);overflow-x:hidden;cursor:none; }
+  @media (hover:none){ body{cursor:auto;} .cursor,.cursor-ring{display:none;} }
+  .cursor { width:14px;height:14px;background:var(--lav);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;top:0;left:0;will-change:transform;transform:translate(-50%,-50%);transition:width 0.2s,height 0.2s,background 0.2s; }
+  .cursor-ring { width:38px;height:38px;border:2px solid var(--lav);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;top:0;left:0;will-change:transform;transform:translate(-50%,-50%);opacity:0.5;transition:width 0.2s,height 0.2s,opacity 0.2s; }
+  body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url%28%2523n%29' opacity='0.05'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.5; }
+  nav { position:fixed;top:0;left:0;right:0;z-index:500;padding:20px 48px;display:flex;align-items:center;justify-content:space-between;mix-blend-mode:multiply; }
+  .nav-logo { font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:var(--ink);text-decoration:none; }
+  .nav-logo span { color:var(--pink); }
+  .nav-links { display:flex;gap:36px;list-style:none; }
+  .nav-links a { font-family:'Caveat',cursive;font-size:18px;color:var(--ink);text-decoration:none;position:relative;transition:color 0.2s; }
+  .nav-links a::after { content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:var(--pink);transform:scaleX(0);transform-origin:left;transition:transform 0.3s ease; }
+  .nav-links a:hover { color:var(--pink); }
+  .nav-links a:hover::after { transform:scaleX(1); }
+  .part-toggle { position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:600;display:flex;gap:4px;background:rgba(26,10,20,0.92);backdrop-filter:blur(8px);border-radius:100px;padding:5px;box-shadow:0 8px 30px rgba(0,0,0,0.18); }
+  .part-toggle button { font-family:var(--mono);font-size:11px;letter-spacing:0.04em;text-transform:uppercase;color:rgba(255,255,255,0.6);background:transparent;border:none;border-radius:100px;padding:9px 18px;cursor:pointer;transition:color 0.2s,background 0.25s;display:flex;align-items:center;gap:7px;white-space:nowrap; }
+  .part-toggle button .pnum { font-weight:600;opacity:0.7; }
+  .part-toggle button.active { background:var(--cream);color:var(--ink); }
+  .part-toggle button.active .pnum { color:var(--pink);opacity:1; }
+  @media (max-width:680px){ .part-toggle button{padding:8px 13px;font-size:10px;} .part-toggle button .label-long{display:none;} }
+  .view { display:none; }
+  .view.active { display:block; }
+  .blob { position:absolute;border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;pointer-events:none; }
+  @keyframes blobFloat { 0%,100%{border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;transform:translate(0,0)} 50%{border-radius:40% 60% 30% 70% / 60% 40% 70% 50%;transform:translate(8px,-12px)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .reveal { opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease; }
+  .reveal.visible { opacity:1;transform:translateY(0); }
+  .section-title { font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:var(--ink); }
+  .stroke-ink { -webkit-text-stroke:2.5px var(--ink);color:transparent; }
+  .stroke-white { -webkit-text-stroke:2.5px white;color:transparent; }
+  .scribble { font-family:'Caveat',cursive;font-size:18px;color:var(--muted);transform:rotate(-2deg);display:inline-block; }
+  .section-header { display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:56px; }
+  .mono { font-family:var(--mono);font-size:12px;letter-spacing:0.02em; }
+  .chip { padding:8px 18px;border-radius:100px;font-size:13px;font-weight:500; }
+  .tag-sim { font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 10px;border-radius:100px;border:1px dashed currentColor;display:inline-block; }
+  .card-light { background:white;border-radius:20px;padding:32px;border:1px solid rgba(0,0,0,0.06); }
+  .slack { background:white;border-radius:18px;padding:24px 26px;border:1px solid rgba(0,0,0,0.07);box-shadow:0 6px 24px rgba(0,0,0,0.05);display:flex;gap:16px; }
+  .slack-av { width:42px;height:42px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;color:white;font-size:16px; }
+  .slack-name { font-weight:700;font-size:14px;color:var(--ink); }
+  .slack-role { font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-left:8px; }
+  .slack-time { font-family:var(--mono);font-size:10.5px;color:rgba(0,0,0,0.3);margin-left:8px; }
+  .slack-body { font-size:14.5px;color:var(--ink);line-height:1.7;margin-top:6px; }
+  .bar-row { display:flex;align-items:center;gap:12px;margin-bottom:12px; }
+  .bar-label { width:240px;font-size:13px;color:var(--ink);font-weight:500;flex-shrink:0;line-height:1.35; }
+  .bar-track { flex:1;height:26px;background:rgba(0,0,0,0.06);border-radius:100px;overflow:hidden;position:relative; }
+  .bar-fill { height:100%;border-radius:100px;display:flex;align-items:center;justify-content:flex-end;padding-right:12px;font-family:var(--mono);font-size:12px;color:white;font-weight:600; }
+  .audit { width:100%;border-collapse:collapse;font-size:14px; }
+  .audit th { text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.45);padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.1); }
+  .audit td { padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.85); }
+  .audit .q2 { font-family:var(--mono);color:var(--lav); }
+  .audit .q4 { font-family:var(--mono);color:var(--pink);font-weight:600; }
+  .audit .delta { font-family:var(--mono);font-size:12px;color:rgba(255,255,255,0.4); }
+  .guide-q { font-size:14.5px;color:var(--ink);line-height:1.6;padding-left:20px;position:relative;margin-bottom:11px; }
+  .guide-q::before { content:'';position:absolute;left:0;top:9px;width:7px;height:7px;border-radius:50%;background:var(--lav); }
+  .guide-q .probe { display:block;font-family:'Caveat',cursive;font-size:15px;color:var(--muted);margin-top:2px; }
+  .person-tab { display:flex;gap:10px;align-items:center;background:white;border:1px solid rgba(0,0,0,0.06);border-radius:100px;padding:7px 16px 7px 7px;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;flex-shrink:0; }
+  .person-tab:hover { transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.07); }
+  .person-tab.active { box-shadow:0 6px 20px rgba(0,0,0,0.1);border-color:transparent; }
+  .person-av { width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;color:white;font-size:13px; }
+  .person-meta { line-height:1.15; }
+  .person-name { font-size:13px;font-weight:600;color:var(--ink); }
+  .person-sub { font-family:var(--mono);font-size:9.5px;color:var(--muted); }
+  .panel { display:none; }
+  .panel.active { display:block;animation:fadeUp 0.4s ease both; }
+  .quote-line { font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;line-height:1.5;color:var(--ink);padding-left:20px;border-left:3px solid var(--lav);margin-bottom:18px; }
+  @media (max-width:760px){ .bar-label{width:140px;} nav .nav-links{display:none;} }
+</style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-ring"></div>
+<span id="top"></span>
+
+<nav>
+  <a href="index.html" class="nav-logo">D<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#work">work</a></li>
+    <li><a href="devika-about.html">about</a></li>
+    <li><a href="devika-contact.html">contact</a></li>
+  </ul>
+</nav>
+
+<div class="part-toggle" role="tablist" aria-label="Case study parts">
+  <button id="tab-plan" class="active" onclick="showView('plan')"><span class="pnum">01</span><span>The Plan</span></button>
+  <button id="tab-run" onclick="showView('run')"><span class="pnum">02</span><span>The <span class="label-long">Sprint, </span>Run</span></button>
+</div>
+
+<div class="view active" id="view-plan">
+<!-- HERO -->
+<section data-screen-label="Hero" style="min-height:100vh;background:var(--ink);padding:140px 48px 80px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
+  <div class="blob" style="width:500px;height:500px;background:var(--lav);opacity:0.07;top:-100px;right:-100px;animation:blobFloat 8s ease-in-out infinite;"></div>
+  <div class="blob" style="width:300px;height:300px;background:var(--pink);opacity:0.07;bottom:-60px;left:-60px;animation:blobFloat 10s ease-in-out infinite reverse;"></div>
+  <div style="position:relative;z-index:2;max-width:980px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;animation:fadeUp 0.6s ease 0.05s both;">
+      <span style="font-family:'Caveat',cursive;font-size:16px;color:var(--lav);">Simulated work scenario · UX Research lead · meditation app</span>
+    </div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5.5vw,5rem);font-weight:900;line-height:1.05;color:white;margin-bottom:28px;animation:fadeUp 0.6s ease 0.1s both;">
+      A retention drop,<br/>
+      a <em style="color:var(--lav);font-style:italic;">skeptical PM</em>,<br/>
+      and <span style="-webkit-text-stroke:2px white;color:transparent;">three weeks.</span>
+    </h1>
+    <p style="font-size:18px;color:rgba(255,255,255,0.55);line-height:1.7;max-width:680px;margin-bottom:32px;animation:fadeUp 0.6s ease 0.2s both;">30-day retention for the meditation <strong style="color:rgba(255,255,255,0.8);">beginner flow</strong> slid from <strong style="color:var(--lav);">41%</strong> to <strong style="color:var(--pink);">28%</strong> in two quarters. I was pulled in as research lead to own discovery before anyone threw design at it — in a 3-week sprint, with a PM who wanted a survey out by Thursday. This is how I'd audit, plan, and defend that research.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp 0.6s ease 0.3s both;">
+      <span class="chip" style="background:var(--yellow);color:var(--ink);">↘ 41% → 28% in 2 quarters</span>
+      <span class="chip" style="background:rgba(184,160,255,0.15);color:var(--lav);border:1px solid rgba(184,160,255,0.3);">3-week discovery sprint</span>
+      <span class="chip" style="background:rgba(255,107,138,0.15);color:var(--pink);border:1px solid rgba(255,107,138,0.3);">Interviews → targeted survey</span>
+      <span class="chip" style="background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1);">Stakeholder management</span>
+      <span class="chip" style="background:rgba(94,243,140,0.12);color:var(--green);border:1px solid rgba(94,243,140,0.25);">Portfolio simulation</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO READ -->
+<section data-screen-label="How to read this" style="padding:80px 48px;background:var(--pink);position:relative;overflow:hidden;">
+  <div class="blob" style="width:400px;height:300px;background:var(--yellow);opacity:0.2;top:-80px;right:-80px;animation:blobFloat 9s ease-in-out infinite;"></div>
+  <div style="max-width:920px;margin:0 auto;position:relative;z-index:2;" class="reveal">
+    <div style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.7);transform:rotate(-1deg);display:inline-block;margin-bottom:20px;">✦ how to read this case study</div>
+    <blockquote style="font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2.1rem);font-weight:700;color:white;line-height:1.4;margin-bottom:24px;">This is a simulated scenario I ran as practice. The real work on display is the <em>discovery thinking</em> — auditing existing data, choosing a method and defending it, and planning three weeks that hold up under stakeholder pressure.</blockquote>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      <div style="background:rgba(255,255,255,0.14);border-radius:16px;padding:22px;">
+        <div class="tag-sim" style="color:white;margin-bottom:12px;">The setup is the work</div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.65;">The brief, the data audit, the interviews-first decision, the sprint plan and the stakeholder push-back all happened in the simulation. That's the core of this study.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.14);border-radius:16px;padding:22px;">
+        <div class="tag-sim" style="color:white;margin-bottom:12px;">Hypotheses = preliminary</div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.65;">They're drawn honestly from the real audited metrics and reviews — but they're starting points the interviews would test, not conclusions.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.14);border-radius:16px;padding:22px;">
+        <div class="tag-sim" style="color:white;margin-bottom:12px;">Findings = projected</div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.65;">The sprint hadn't run yet, so the closing "where this lands" section is where I'd <em>expect</em> the evidence to point — clearly labelled, never claimed as measured.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE BRIEF -->
+<section data-screen-label="The brief" style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">The <span class="stroke-ink">Brief</span></h2>
+      <span class="reveal scribble">Monday, 9:04 AM. A Slack ping. ✦</span>
+    </div>
+
+    <div class="reveal slack" style="margin-bottom:14px;">
+      <div class="slack-av" style="background:linear-gradient(135deg,#b8a0ff,#8a6fd6);">JK</div>
+      <div>
+        <div><span class="slack-name">Jordan Kim</span><span class="slack-role">RESEARCH DIRECTOR</span><span class="slack-time">9:04 AM</span></div>
+        <div class="slack-body">"30-day retention for new users in the meditation <strong>beginner flow</strong> went from <strong>41% down to 28%</strong> over two quarters and nobody has a clear answer why. I'm pulling you in as research lead — own the discovery phase end to end. Figure out what's actually going on before we throw design solutions at it. I need a research plan, scoped for a <strong>3-week sprint</strong>, by Wednesday."</div>
+        <div class="slack-body" style="color:var(--muted);font-size:13.5px;margin-top:10px;">"Heads up — the PM is Rohan. He's already got hypotheses he'll want to push on you. Manage that diplomatically 😅"</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;">
+      <div class="reveal card-light">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--muted);margin-bottom:12px;">✦ what I'm actually being asked to do</div>
+        <p style="font-size:14.5px;color:var(--ink);line-height:1.75;margin-bottom:14px;">Lead <strong>discovery</strong> — diagnose <em>why</em> beginners are churning before anyone designs a fix. My scope ends at <strong>insights and recommendations</strong>. Redesign and deployment belong to product and design; if I let those creep into my plan, I'd be signing up to a timeline that isn't mine to own.</p>
+        <p style="font-size:14.5px;color:var(--ink);line-height:1.75;">A direction Product can act on, in three weeks — not a twelve-week academic study.</p>
+      </div>
+      <div class="reveal" style="background:var(--ink);border-radius:20px;padding:28px;">
+        <div class="mono" style="color:var(--yellow);margin-bottom:16px;">THE CONSTRAINTS I'M HOLDING</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:14px 16px;border-left:3px solid var(--lav);"><div style="font-size:12.5px;color:white;font-weight:600;margin-bottom:2px;">3-week sprint · plan due Wed</div><div style="font-size:11.5px;color:rgba(255,255,255,0.5);line-height:1.5;">Fast enough for leadership, rigorous enough to trust.</div></div>
+          <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:14px 16px;border-left:3px solid var(--pink);"><div style="font-size:12.5px;color:white;font-weight:600;margin-bottom:2px;">A PM pushing for speed</div><div style="font-size:11.5px;color:rgba(255,255,255,0.5);line-height:1.5;">Rohan wants a survey out now. I have to defend discovery-first.</div></div>
+          <div style="background:rgba(255,255,255,0.04);border-radius:12px;padding:14px 16px;border-left:3px solid var(--yellow);"><div style="font-size:12.5px;color:white;font-weight:600;margin-bottom:2px;">8 recruitable users (a thin pool)</div><div style="font-size:11.5px;color:rgba(255,255,255,0.5);line-height:1.5;">From the last cohort. Not enough — I'll need to grow it.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE AUDIT -->
+<section data-screen-label="Data audit" style="padding:100px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:white;">First, the <span class="stroke-white">Audit</span></h2>
+      <span class="reveal" style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.35);transform:rotate(-2deg);display:inline-block;">never design new research before reading what exists ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.8;max-width:780px;margin-bottom:40px;">Before proposing a single interview, I pulled everything already sitting in the workspace: the analytics dashboard, the App Store reviews the CS team had flagged, and an old usability study. The goal of an audit isn't to find the answer — it's to find out <strong style="color:white;">what's already known, and exactly where the gaps are</strong> so new research spends its budget on the unknowns.</p>
+
+    <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:14px;margin-bottom:14px;">
+      <!-- QUANT TABLE -->
+      <div class="reveal" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:14px;">✦ quantitative · Mixpanel dashboard</div>
+        <table class="audit">
+          <thead><tr><th>Metric (beginner flow)</th><th>Q2</th><th>Q4</th></tr></thead>
+          <tbody>
+            <tr><td>30-day retention</td><td class="q2">41%</td><td class="q4">28%</td></tr>
+            <tr><td>Avg. sessions, first week</td><td class="q2">4.2</td><td class="q4">2.7</td></tr>
+            <tr><td>Day-1 intro completion</td><td class="q2">76%</td><td class="q4">61%</td></tr>
+            <tr><td>Set a reminder</td><td class="q2">54%</td><td class="q4">38%</td></tr>
+            <tr><td>Explore beyond Day 3</td><td class="q2">49%</td><td class="q4">31%</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:12.5px;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:16px;"><strong style="color:white;">Every step degraded — not just retention.</strong> Completion, reminders, and Day-3 exploration all fell together. That pattern says the problem is broad and early, not one broken button.</p>
+      </div>
+
+      <!-- QUAL REVIEWS -->
+      <div class="reveal" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--yellow);margin-bottom:14px;">✦ qualitative · 23 App Store reviews (90 days)</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div class="bar-row" style="margin-bottom:0;gap:10px;"><div style="width:24px;font-family:var(--mono);font-size:13px;color:var(--pink);font-weight:700;">11</div><div style="flex:1;font-size:12.5px;color:rgba(255,255,255,0.85);line-height:1.4;">"Forgot about the app after the first day"</div></div>
+          <div class="bar-row" style="margin-bottom:0;gap:10px;"><div style="width:24px;font-family:var(--mono);font-size:13px;color:var(--pink);font-weight:700;">9</div><div style="flex:1;font-size:12.5px;color:rgba(255,255,255,0.85);line-height:1.4;">"Overwhelming at first, didn't know where to start"</div></div>
+          <div class="bar-row" style="margin-bottom:0;gap:10px;"><div style="width:24px;font-family:var(--mono);font-size:13px;color:var(--lav);font-weight:700;">7</div><div style="flex:1;font-size:12.5px;color:rgba(255,255,255,0.85);line-height:1.4;">"Sessions too long — 10 min felt like a lot for a beginner"</div></div>
+          <div class="bar-row" style="margin-bottom:0;gap:10px;"><div style="width:24px;font-family:var(--mono);font-size:13px;color:var(--lav);font-weight:700;">6</div><div style="flex:1;font-size:12.5px;color:rgba(255,255,255,0.85);line-height:1.4;">"Free trial ran out before I felt ready to commit"</div></div>
+        </div>
+        <p style="font-size:12.5px;color:rgba(255,255,255,0.5);line-height:1.6;margin-top:18px;">Useful signal, but <strong style="color:white;">self-selected</strong> — only certain users leave reviews. A vocal minority, not the silent majority who just deleted the app. I can't size a strategy on 23 reviews.</p>
+      </div>
+    </div>
+
+    <!-- PRIOR STUDY + WHAT'S MISSING -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="reveal" style="background:rgba(184,160,255,0.08);border:1px solid rgba(184,160,255,0.2);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:10px;">✦ the timeline clue everyone missed</div>
+        <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.75;">The only prior study (6 users, moderated, 8 months ago) flagged a <strong style="color:white;">confusing session picker</strong> — but praised the content. A redesign of that onboarding shipped <strong style="color:var(--lav);">6 months ago</strong>, squarely inside the decline window. Yet "didn't know where to start" is <em>still</em> the second-loudest review theme. So the redesign may not have fixed the overwhelm — it may have moved it. That's my first thread to pull.</p>
+      </div>
+      <div class="reveal" style="background:rgba(255,107,138,0.07);border:1px solid rgba(255,107,138,0.2);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--pink);margin-bottom:10px;">✦ what the data can't tell me</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;">
+          <li style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.55;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--pink);">→</span> <strong style="color:white;">Why</strong> beginners feel overwhelmed or forget — the story behind the drop-off.</li>
+          <li style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.55;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--pink);">→</span> Whether the <strong style="color:white;">redesign</strong> specifically caused it, or acquisition mix shifted.</li>
+          <li style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.55;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--pink);">→</span> What "ready to commit" means to a beginner — and when that moment is.</li>
+          <li style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.55;padding-left:18px;position:relative;"><span style="position:absolute;left:0;color:var(--pink);">→</span> The emotional + contextual reasons people quietly leave.</li>
+        </ul>
+        <p style="font-size:12.5px;color:rgba(255,255,255,0.45);line-height:1.6;margin-top:14px;font-style:italic;">The numbers tell me <em>what</em> and <em>where</em>. They can't tell me <em>why</em>. That gap is the whole reason for new research.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE STRATEGIC CALL -->
+<section data-screen-label="The method call" style="padding:100px 48px;background:var(--lav-pale);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">The <span class="stroke-ink">Call</span></h2>
+      <span class="reveal scribble">interviews first — and why I held that line ✦</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;">
+      <div>
+        <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:22px;">The PM, Rohan, wanted a survey blasted to the cohort this week — fast numbers by Thursday. Tempting. But a survey can only measure answers to questions you already know to ask. We're in <strong style="color:var(--ink);">pure discovery</strong>: I don't have hypotheses worth measuring yet.</p>
+        <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:22px;">So the sequence is deliberate: <strong style="color:var(--ink);">5 interviews first</strong> to let beginners surprise me and surface the real themes, <em>then</em> a <strong style="color:var(--ink);">targeted survey</strong> to size how widespread those themes are. Interviews explore; surveys validate. Run them in the wrong order and you measure the wrong thing with confidence.</p>
+        <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;">That's mixed methods with a reason — qual to find the <em>why</em>, quant to prove <em>how many</em>.</p>
+      </div>
+      <div class="reveal" style="background:white;border-radius:20px;padding:32px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 8px 30px rgba(0,0,0,0.05);">
+        <div class="mono" style="color:var(--pink);margin-bottom:16px;">DEFENDING IT IN THE ROOM</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px 16px;"><div style="font-size:11px;font-family:var(--mono);color:var(--pink);margin-bottom:4px;">ROHAN PUSHED →</div><div style="font-size:13px;color:var(--ink);line-height:1.5;">"We have 8 users now. Why not survey today and have data by Thursday?"</div></div>
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px 16px;"><div style="font-size:11px;font-family:var(--mono);color:var(--lav);margin-bottom:4px;">I HELD →</div><div style="font-size:13px;color:var(--ink);line-height:1.5;">"Interviews build the hypotheses the survey needs. Without them we won't know what to ask — we'd risk measuring the wrong thing."</div></div>
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px 16px;"><div style="font-size:11px;font-family:var(--mono);color:var(--pink);margin-bottom:4px;">ROHAN AGAIN →</div><div style="font-size:13px;color:var(--ink);line-height:1.5;">"Aren't the App Store reviews enough to build a survey from?"</div></div>
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px 16px;"><div style="font-size:11px;font-family:var(--mono);color:var(--lav);margin-bottom:4px;">I HELD →</div><div style="font-size:13px;color:var(--ink);line-height:1.5;">"Reviews are self-selected — a vocal minority. Building on them risks optimizing for the loudest, not the typical, beginner."</div></div>
+          <div style="background:#fff8d4;border-radius:12px;padding:14px 16px;"><div style="font-size:11px;font-family:var(--mono);color:#a68a00;margin-bottom:4px;">THE BRIDGE →</div><div style="font-size:13px;color:var(--ink);line-height:1.5;">I took Rohan's drafted survey questions as <strong>inputs to the interview guide</strong> — keeping him bought-in without compromising the order.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRELIMINARY HYPOTHESES -->
+<section data-screen-label="Hypotheses" style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">Working <span class="stroke-ink">Hypotheses</span></h2>
+      <span class="reveal scribble">what the audit suggests — for interviews to test ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;max-width:760px;margin-bottom:40px;">These aren't conclusions — they're the threads the audit hands me, each tied to a specific metric or theme. The interviews are designed to confirm, kill, or replace them. I'd write them down <em>before</em> fieldwork so I can't quietly bend the findings toward a favourite.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="reveal card-light">
+        <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:10px;"><span class="mono" style="color:var(--lav);">H1</span><span style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);">Onboarding overwhelm.</span></div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">Beginners face too many choices up front and "don't know where to start." The 6-month-ago redesign may have shuffled the confusion rather than solving it.</p>
+        <div style="margin-top:14px;font-size:12px;color:var(--lav);font-family:var(--mono);">SIGNAL → Day-1 completion 76% → 61% · 9 reviews</div>
+      </div>
+      <div class="reveal card-light">
+        <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:10px;"><span class="mono" style="color:var(--pink);">H2</span><span style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);">Session length mismatch.</span></div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">The default 10-minute sessions feel too long for a true beginner. There's no gentle on-ramp, so first sessions feel like effort, not relief.</p>
+        <div style="margin-top:14px;font-size:12px;color:var(--pink);font-family:var(--mono);">SIGNAL → avg sessions wk1 4.2 → 2.7 · 7 reviews</div>
+      </div>
+      <div class="reveal card-light">
+        <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:10px;"><span class="mono" style="color:#a68a00;">H3</span><span style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);">The habit hook is failing.</span></div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">Nothing pulls beginners back after Day 1. Fewer set reminders, fewer explore past Day 3, and "forgot about the app" is the single loudest complaint.</p>
+        <div style="margin-top:14px;font-size:12px;color:#a68a00;font-family:var(--mono);">SIGNAL → reminders 54%→38% · explore-D3 49%→31% · 11 reviews</div>
+      </div>
+      <div class="reveal card-light">
+        <div style="display:flex;gap:10px;align-items:baseline;margin-bottom:10px;"><span class="mono" style="color:var(--green);">H4</span><span style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);">The trial expires too early.</span></div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">The free trial ends before beginners feel enough value to commit — turning a "not yet" into a permanent "no."</p>
+        <div style="margin-top:14px;font-size:12px;color:#2a9d57;font-family:var(--mono);">SIGNAL → 6 reviews · "ran out before I was ready"</div>
+      </div>
+    </div>
+    <p class="reveal" style="font-size:13px;color:var(--muted);line-height:1.7;margin-top:24px;font-style:italic;max-width:760px;">One open question the data can't settle: did the redesign cause this (a regression) or did acquisition quality change? I'd flag that for the data analyst to split retention by channel — keeping it out of my qual scope but on the team's radar.</p>
+  </div>
+</section>
+
+<!-- THE 3-WEEK SPRINT -->
+<section data-screen-label="The sprint plan" style="padding:100px 48px;background:var(--yellow);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">The 3-Week <span class="stroke-ink">Sprint</span></h2>
+      <span class="reveal scribble">tight, sequenced, no dead days ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:var(--ink);line-height:1.7;max-width:740px;margin-bottom:48px;opacity:0.8;">The plan I'd put in front of Jordan and Rohan. The discipline that matters here: research stops at recommendations (design owns the rest), the survey can't start until hypotheses are solid, and there's no "waiting for results" dead time — interview synthesis runs in parallel while the survey is in the field.</p>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <!-- WEEK 1 -->
+      <div class="reveal" style="background:white;border-radius:20px;padding:32px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;font-style:italic;color:var(--lav);">Week 1</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Discover — interviews</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--lav);margin-bottom:6px;">MON</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Draft interview guide (Jordan reviews first) · recruit &amp; schedule</div></div>
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--lav);margin-bottom:6px;">TUE</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Interviews 1–2</div></div>
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--lav);margin-bottom:6px;">WED</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Interviews 3–4</div></div>
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--lav);margin-bottom:6px;">THU</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Interview 5 · debrief notes</div></div>
+          <div style="background:var(--lav-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--lav);margin-bottom:6px;">FRI</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Begin hypothesis synthesis <em>(may bleed into Mon)</em></div></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:14px;font-style:italic;">Called out explicitly: hypothesis work may finish Monday — so Week 2 kicks off Tuesday, not a hidden slack day.</p>
+      </div>
+
+      <!-- WEEK 2 -->
+      <div class="reveal" style="background:white;border-radius:20px;padding:32px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;font-style:italic;color:var(--pink);">Week 2</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Validate — survey + synthesis in parallel</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--pink);margin-bottom:6px;">MON</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Finalize hypotheses</div></div>
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--pink);margin-bottom:6px;">TUE</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Draft &amp; field targeted survey (n≈15)</div></div>
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--pink);margin-bottom:6px;">WED</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Interview deep-dive synthesis <em>(survey in field)</em></div></div>
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--pink);margin-bottom:6px;">THU</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Finish synthesis · monitor responses</div></div>
+          <div style="background:var(--pink-pale);border-radius:12px;padding:14px;"><div class="mono" style="color:var(--pink);margin-bottom:6px;">FRI</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Begin recommendations</div></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:14px;font-style:italic;">The fix for "dead time": Wed–Thu aren't spent waiting on the survey — they're spent fully synthesizing the interviews, so Friday's recs start from half a picture, not zero.</p>
+      </div>
+
+      <!-- WEEK 3 -->
+      <div class="reveal" style="background:white;border-radius:20px;padding:32px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+        <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+          <div style="font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;font-style:italic;color:#a68a00;">Week 3</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Synthesize &amp; hand off</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          <div style="background:#fff8d4;border-radius:12px;padding:14px;"><div class="mono" style="color:#a68a00;margin-bottom:6px;">MON–TUE</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Finalize recommendations · write up limitations &amp; confidence</div></div>
+          <div style="background:#fff8d4;border-radius:12px;padding:14px;"><div class="mono" style="color:#a68a00;margin-bottom:6px;">WED</div><div style="font-size:12px;color:var(--ink);line-height:1.45;">Handoff — deck for Rohan (PM), report for Jordan (director)</div></div>
+          <div style="background:#fff8d4;border-radius:12px;padding:14px;display:flex;align-items:center;"><div style="font-size:12px;color:var(--ink);line-height:1.45;font-style:italic;color:var(--muted);">Scope ends here — design + deployment is product &amp; design's to own.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISKS + DELIVERABLES -->
+<section data-screen-label="Risks and deliverables" style="padding:100px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:white;">Risks &amp; <span class="stroke-white">Handoff</span></h2>
+      <span class="reveal" style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.35);transform:rotate(-2deg);display:inline-block;">name the risks before someone else does ✦</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+      <div class="reveal" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--pink);margin-bottom:8px;">✦ risk · thin recruitment pool</div>
+        <div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">8 users isn't enough — and dropouts would hurt.</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">Mitigation: grow to ~15 with the growth team (Priya pulls a wider pool by Wed), and over-recruit so a no-show doesn't sink a day.</p>
+      </div>
+      <div class="reveal" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:8px;">✦ risk · hypotheses unclear after Week 1</div>
+        <div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">Five interviews might not converge.</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">Contingency: a second short interview round, run alongside a limited survey — with the honest tradeoff that doing both at once is a compromise forced by time, not the ideal.</p>
+      </div>
+      <div class="reveal" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--yellow);margin-bottom:8px;">✦ risk · slow survey responses</div>
+        <div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">Week 2 synthesis depends on responses landing.</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">Mitigation: a hard response deadline, scheduled reminders, and parallel interview synthesis so a lagging survey doesn't stall the sprint.</p>
+      </div>
+      <div class="reveal" style="background:rgba(94,243,140,0.07);border:1px solid rgba(94,243,140,0.2);border-radius:20px;padding:28px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--green);margin-bottom:8px;">✦ guardrail · scope discipline</div>
+        <div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">Research delivers insight, not the redesign.</div>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">I caught myself drafting "redesign + deploy" into the plan and pulled it back. Owning a design timeline I don't control is how a researcher loses the room.</p>
+      </div>
+    </div>
+
+    <!-- DELIVERABLES -->
+    <div class="reveal" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:36px;">
+      <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--lav);margin-bottom:20px;">✦ two audiences, two deliverables</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div style="background:rgba(255,107,138,0.08);border:1px solid rgba(255,107,138,0.2);border-radius:16px;padding:24px;">
+          <div class="mono" style="color:var(--pink);margin-bottom:8px;">FOR ROHAN · PM</div>
+          <div style="font-size:15px;color:white;font-weight:600;margin-bottom:6px;">A decision-oriented deck</div>
+          <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">Skimmable, recommendation-first, "what do we do Monday." He wants speed and a clear call — and a Slack update every couple of days so he can manage upward.</p>
+        </div>
+        <div style="background:rgba(184,160,255,0.08);border:1px solid rgba(184,160,255,0.2);border-radius:16px;padding:24px;">
+          <div class="mono" style="color:var(--lav);margin-bottom:8px;">FOR JORDAN · RESEARCH DIRECTOR</div>
+          <div style="font-size:15px;color:white;font-weight:600;margin-bottom:6px;">A full research report</div>
+          <p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">Method, sample, synthesis, confidence and limitations. She reviews the interview guide before any session runs — rigor is the deliverable she's judging.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHERE THIS LANDS (PROJECTED) -->
+<section data-screen-label="Where this lands" style="padding:100px 48px;background:var(--lav-pale);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">Where I'd expect <span class="stroke-ink">it to land</span></h2>
+      <span class="reveal scribble">the recommendations this sets up ✦</span>
+    </div>
+    <div class="reveal" style="display:inline-flex;align-items:center;gap:10px;background:white;border:1px dashed var(--muted);border-radius:100px;padding:8px 16px;margin-bottom:36px;">
+      <span class="tag-sim" style="color:var(--muted);border:none;padding:0;">Projected</span>
+      <span style="font-size:12.5px;color:var(--muted);">The sprint hadn't run — these are the directions the audit points toward, to be confirmed by the interviews and survey, then handed to design.</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--lav);margin-bottom:10px;">DIRECTION 01</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3;">Give beginners one obvious first step.</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">If H1 holds, the fix isn't more content — it's removing choice. A single guided "start here" path beats a picker that makes newcomers feel lost.</p>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--pink);margin-bottom:10px;">DIRECTION 02</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3;">Shorten the on-ramp.</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">A 2–3 minute first session lets beginners feel calm before they're asked for 10. Earn the longer sessions; don't open with them.</p>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:#a68a00;margin-bottom:10px;">DIRECTION 03</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3;">Build the Day 2–3 return loop.</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">"Forgot about the app" is the loudest theme. A reason to come back on day two — not just an opt-in reminder — is where retention is won or lost.</p>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--green);margin-bottom:10px;">DIRECTION 04</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3;">Re-time the trial to value.</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">If beginners aren't "ready to commit" when the trial ends, the trial is timed to the calendar, not the user. Tie the ask to a value moment instead.</p>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--lav);margin-bottom:10px;">FOR THE TEAM</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3;">Settle the redesign question.</div>
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">Pair my qual with the analyst's channel-split to confirm whether the 6-month-ago redesign is the regression — or whether acquisition shifted underneath us.</p>
+      </div>
+      <div class="reveal" style="background:var(--ink);color:white;border-radius:20px;padding:28px;">
+        <div class="mono" style="color:var(--yellow);margin-bottom:10px;">HOW I'D PROVE ANY OF IT</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:white;margin-bottom:12px;line-height:1.3;">Recommend, then test.</div>
+        <p style="font-size:13.5px;color:rgba(255,255,255,0.6);line-height:1.7;">Discovery points the team at a cause and a direction. Whether a change moves D30 is for design to build and an A/B test to confirm — not for research to promise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION -->
+<section data-screen-label="Reflection" style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">What I <span class="stroke-ink">learned</span></h2>
+      <span class="reveal scribble">the parts that aren't on a slide ✦</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="reveal card-light">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">Managing the PM <em>is</em> the job.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Holding the interviews-first line with Rohan mattered as much as the method itself. The move that worked: open with the number he cares about (the 13-point drop), speak from expertise instead of "I feel," and fold his survey questions into my guide so he stayed an ally, not an obstacle.</p>
+      </div>
+      <div class="reveal card-light" style="border-left:4px solid var(--pink);">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">I scoped myself wrong at first — and fixed it.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">My first draft had redesign and deployment inside the sprint. That's not research scope. Pulling it back to insights-and-recommendations kept me from being held to a timeline I don't control. A real lesson in role discipline.</p>
+      </div>
+      <div class="reveal card-light">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">Recover from contradictions honestly.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">When Rohan caught me suggesting parallel surveys after I'd argued against them, the right move wasn't to get defensive — it was to name it as a time-pressured Plan B with a real tradeoff. Honesty under pressure reads as senior, not shaky.</p>
+      </div>
+      <div class="reveal card-light">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">What I'd do differently.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Pre-align with Rohan in a quick 1:1 <em>before</em> the group sync, so the method debate doesn't play out in front of the director. And I'd quota the sample to deliberately include older, less app-fluent beginners — my pool skews young, which is a real blind spot for a beginner-experience question.</p>
+      </div>
+      <div class="reveal card-light">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">It's simulated — and the data could still surprise me.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">I've written the most likely story from the audit, but five real interviews could overturn it. The value of the plan is that it would <em>tell</em> me — and I'd follow the evidence over my own tidy hypothesis every time.</p>
+      </div>
+      <div class="reveal" style="background:var(--ink);color:white;border-radius:20px;padding:32px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--yellow);margin-bottom:12px;">✦ the meta-point</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:white;margin-bottom:12px;line-height:1.35;">Discovery isn't slow — it's the thing that stops you from building the wrong fix fast.</div>
+        <p style="font-size:13.5px;color:rgba(255,255,255,0.6);line-height:1.7;">The whole sprint is a case for spending three weeks understanding the problem so the next three months aren't spent shipping a guess.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT -->
+<section data-screen-label="What I'd study next" style="padding:100px 48px;background:var(--pink);">
+  <div style="max-width:900px;margin:0 auto;" class="reveal">
+    <div style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.7);transform:rotate(-1deg);display:inline-block;margin-bottom:16px;">✦ if I ran the sprint for real</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:900;color:white;line-height:1.15;margin-bottom:28px;">The next move is the interview guide — and then letting five beginners tell me I'm wrong.</h2>
+    <p style="font-size:16px;color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:20px;">This case study stops where the real work would begin: a guide built around the four hypotheses, reviewed by Jordan, then five conversations that either confirm the audit's story or rewrite it. The most useful outcome isn't being right — it's handing Product a diagnosis they can trust enough to build on.</p>
+    <p style="font-size:16px;color:rgba(255,255,255,0.8);line-height:1.75;margin-bottom:32px;">So I ran it. Part two plays the full three weeks end-to-end — the interview guide, five beginners, the synthesis, the survey, and the final deck-and-report handoff. One hypothesis didn't survive contact.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <a href="#top" onclick="showView('run');return false;" style="background:var(--ink);color:white;font-weight:700;font-size:15px;padding:16px 36px;border-radius:100px;text-decoration:none;box-shadow:4px 4px 0 var(--yellow);transition:transform 0.2s,box-shadow 0.2s;display:inline-block;">Read part two — the sprint, run →</a>
+      <a href="index.html#work" style="background:transparent;color:white;font-weight:700;font-size:15px;padding:16px 36px;border-radius:100px;text-decoration:none;border:1px solid rgba(255,255,255,0.4);transition:transform 0.2s;display:inline-block;">← back to work</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section style="padding:60px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;">
+    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:white;">D<span style="color:var(--pink);">.</span></div>
+    <div style="font-family:'Caveat',cursive;font-size:16px;color:rgba(255,255,255,0.4);">simulated case study · made with care · 2026</div>
+  </div>
+</section>
+</div>
+
+<div class="view" id="view-run">
+<!-- HERO -->
+<section data-screen-label="Hero" style="min-height:100vh;background:var(--ink);padding:140px 48px 80px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;">
+  <div class="blob" style="width:500px;height:500px;background:var(--pink);opacity:0.07;top:-100px;right:-120px;animation:blobFloat 8s ease-in-out infinite;"></div>
+  <div class="blob" style="width:300px;height:300px;background:var(--lav);opacity:0.08;bottom:-60px;left:-60px;animation:blobFloat 10s ease-in-out infinite reverse;"></div>
+  <div style="position:relative;z-index:2;max-width:1000px;">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;animation:fadeUp 0.6s ease 0.05s both;">
+      <a href="#top" onclick="showView('plan');return false;" style="font-family:'Caveat',cursive;font-size:16px;color:var(--lav);text-decoration:none;">← Part one was the plan. This is what happened when I ran it.</a>
+    </div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5.5vw,5rem);font-weight:900;line-height:1.05;color:white;margin-bottom:28px;animation:fadeUp 0.6s ease 0.1s both;">
+      The sprint,<br/>
+      <span style="-webkit-text-stroke:2px white;color:transparent;">run</span> <em style="color:var(--pink);font-style:italic;">end to end.</em>
+    </h1>
+    <p style="font-size:18px;color:rgba(255,255,255,0.55);line-height:1.7;max-width:700px;margin-bottom:32px;animation:fadeUp 0.6s ease 0.2s both;">Three weeks, played out. The interview guide I'd actually field. Five beginners who half-confirmed my hypotheses and half-rewrote them. A survey that sized what mattered. And the handoff — one deck, one report — that told Product what to do Monday. <strong style="color:rgba(255,255,255,0.8);">One hypothesis didn't survive contact.</strong></p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp 0.6s ease 0.3s both;">
+      <span class="chip" style="background:var(--lav);color:var(--ink);">5 interviews · 1 guide</span>
+      <span class="chip" style="background:rgba(255,107,138,0.15);color:var(--pink);border:1px solid rgba(255,107,138,0.3);">Survey · n=16</span>
+      <span class="chip" style="background:rgba(255,229,102,0.15);color:var(--yellow);border:1px solid rgba(255,229,102,0.3);">3 of 4 hypotheses held</span>
+      <span class="chip" style="background:rgba(94,243,140,0.12);color:var(--green);border:1px solid rgba(94,243,140,0.25);">Simulated run</span>
+    </div>
+  </div>
+</section>
+
+<!-- FRAMING -->
+<section data-screen-label="How to read this" style="padding:72px 48px;background:var(--green);position:relative;overflow:hidden;">
+  <div class="blob" style="width:380px;height:300px;background:white;opacity:0.18;top:-70px;right:-60px;animation:blobFloat 9s ease-in-out infinite;"></div>
+  <div style="max-width:920px;margin:0 auto;position:relative;z-index:2;" class="reveal">
+    <div style="font-family:'Caveat',cursive;font-size:18px;color:rgba(26,10,20,0.6);transform:rotate(-1deg);display:inline-block;margin-bottom:18px;">✦ still a simulation — but now I let it run</div>
+    <blockquote style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,2.8vw,2rem);font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:22px;">The plan said the findings were <em>projected</em>. So I played the three weeks forward — inventing five plausible beginners, fielding the guide against them, and following the evidence even where it broke my tidy story. This is the honest version of "what if I'd actually run it."</blockquote>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      <div style="background:rgba(255,255,255,0.5);border-radius:16px;padding:20px;">
+        <div class="tag-sim" style="color:var(--ink);margin-bottom:10px;">Participants are invented</div>
+        <p style="font-size:13.5px;color:var(--ink);line-height:1.6;">Five fictional beginners, written to be realistic and varied — not cherry-picked to agree with me.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.5);border-radius:16px;padding:20px;">
+        <div class="tag-sim" style="color:var(--ink);margin-bottom:10px;">The method is real</div>
+        <p style="font-size:13.5px;color:var(--ink);line-height:1.6;">The guide, the synthesis moves, the survey design and the way I'd weight confidence are how I'd actually work.</p>
+      </div>
+      <div style="background:rgba(255,255,255,0.5);border-radius:16px;padding:20px;">
+        <div class="tag-sim" style="color:var(--ink);margin-bottom:10px;">I let a hypothesis die</div>
+        <p style="font-size:13.5px;color:var(--ink);line-height:1.6;">A run where everything you guessed is confirmed is a run you rigged. One of the four didn't hold.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK 1 · THE GUIDE -->
+<section data-screen-label="The interview guide" style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div>
+        <div class="mono reveal" style="color:var(--lav);margin-bottom:10px;">WEEK 1 · MON</div>
+        <h2 class="reveal section-title">The Interview <span class="stroke-ink">Guide</span></h2>
+      </div>
+      <span class="reveal scribble">45 min, semi-structured, Jordan reviewed it first ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;max-width:780px;margin-bottom:44px;">Built around the four hypotheses but written not to lead. The spine is a <strong style="color:var(--ink);">retrospective walkthrough</strong> — I take each beginner back through their own first week rather than asking them to theorize. Rohan's drafted survey questions are folded in as probes, so he stayed bought-in. Note the structure: warm-up before anything sensitive, the drop-off moment in the middle where rapport is highest, trial money-talk last.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--lav);margin-bottom:6px;">00 · WARM-UP — 5 min</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;">Lower the stakes</div>
+        <div class="guide-q">Tell me about the last time you felt stressed or couldn't switch off. What did you do?</div>
+        <div class="guide-q">What made you download a meditation app in the first place — why then?<span class="probe">↳ probe: what was going on in your life that week?</span></div>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--lav);margin-bottom:6px;">01 · FIRST SESSION — 12 min</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;">Walk me through day one</div>
+        <div class="guide-q">Open the app like it's your first time. Talk me through what you see, out loud.<span class="probe">↳ where do your eyes go first? what would you tap?</span></div>
+        <div class="guide-q">When you finished your first session, how did you feel? Was it what you expected?<span class="probe">↳ tests H2 — did 10 min feel long?</span></div>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--pink);margin-bottom:6px;">02 · THE DROP-OFF — 14 min</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;">The day you stopped</div>
+        <div class="guide-q">Take me to the last day you opened the app. What happened after that?<span class="probe">↳ probe: was it a decision, or did it just fade?</span></div>
+        <div class="guide-q">In a perfect world, what would have pulled you back on day two or three?<span class="probe">↳ tests H3 — habit hook</span></div>
+        <div class="guide-q">Did you ever feel unsure what to do or where to start? Tell me about that moment.<span class="probe">↳ tests H1 — overwhelm, without naming it</span></div>
+      </div>
+      <div class="reveal card-light">
+        <div class="mono" style="color:var(--green);margin-bottom:6px;">03 · VALUE &amp; TRIAL — 9 min</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;margin-bottom:14px;">When it was worth it (or wasn't)</div>
+        <div class="guide-q">Was there a moment it clicked — where it felt worth your time? When?<span class="probe">↳ locating the value moment vs. the trial clock</span></div>
+        <div class="guide-q">Did the trial ending affect your decision? Walk me through that.<span class="probe">↳ tests H4 — trial timing</span></div>
+        <div class="guide-q">Anything I should have asked but didn't?</div>
+      </div>
+    </div>
+    <div class="reveal" style="margin-top:20px;background:var(--lav-pale);border-radius:16px;padding:22px 26px;display:flex;gap:16px;align-items:flex-start;">
+      <span style="font-family:'Caveat',cursive;font-size:28px;color:var(--lav);line-height:1;">✎</span>
+      <p style="font-size:14px;color:var(--ink);line-height:1.7;"><strong>Guide discipline I held:</strong> no leading questions ("was the onboarding overwhelming?" becomes "tell me about a moment you felt unsure"), past behaviour over future intention, and silence after each answer — the second sentence is usually the honest one. Jordan's one note: move the trial question last so money-talk doesn't colour the rest. I took it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK 1 · THE INTERVIEWS -->
+<section data-screen-label="The interviews" style="padding:100px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div>
+        <div class="mono reveal" style="color:var(--pink);margin-bottom:10px;">WEEK 1 · TUE–THU</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:white;">Five <span class="stroke-white">Beginners</span></h2>
+      </div>
+      <span class="reveal" style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.35);transform:rotate(-2deg);display:inline-block;">quota'd for age + app-fluency — tap a face ✦</span>
+    </div>
+
+    <div class="reveal" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;" id="person-tabs">
+      <div class="person-tab active" data-p="0" style="background:var(--lav-pale);"><div class="person-av" style="background:linear-gradient(135deg,#b8a0ff,#8a6fd6);">MA</div><div class="person-meta"><div class="person-name">Maya · 29</div><div class="person-sub">DESIGNER · APP-FLUENT</div></div></div>
+      <div class="person-tab" data-p="1"><div class="person-av" style="background:linear-gradient(135deg,#ff6b8a,#d64f6f);">DA</div><div class="person-meta"><div class="person-name">Daniel · 44</div><div class="person-sub">TEACHER · LOW-FLUENCY</div></div></div>
+      <div class="person-tab" data-p="2"><div class="person-av" style="background:linear-gradient(135deg,#ffd54f,#e0a800);">PR</div><div class="person-meta"><div class="person-name">Priya · 23</div><div class="person-sub">STUDENT · APP-FLUENT</div></div></div>
+      <div class="person-tab" data-p="3"><div class="person-av" style="background:linear-gradient(135deg,#5EF38C,#2a9d57);">TO</div><div class="person-meta"><div class="person-name">Tom · 36</div><div class="person-sub">SALES · MID-FLUENCY</div></div></div>
+      <div class="person-tab" data-p="4"><div class="person-av" style="background:linear-gradient(135deg,#c0a0d6,#8a6fa6);">SA</div><div class="person-meta"><div class="person-name">Sarah · 53</div><div class="person-sub">NURSE · LOW-FLUENCY</div></div></div>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:24px;padding:40px;min-height:380px;">
+      <!-- MAYA -->
+      <div class="panel active" data-panel="0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:24px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;">Maya — quit on day 4</div>
+          <span class="tag-sim" style="color:var(--lav);">signed up during a burnout stretch</span>
+        </div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--lav);">"Honestly the content was lovely. I just… forgot it existed. There was no reason to open it on Tuesday — nothing was waiting for me."</div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--lav);">"The reminder I set went off at 8am, which is the worst possible time. I needed it at 11pm when my brain wouldn't stop."</div>
+        <div style="background:rgba(184,160,255,0.1);border-radius:14px;padding:18px 20px;margin-top:8px;">
+          <div class="mono" style="color:var(--lav);margin-bottom:6px;">WHAT IT MOVED</div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.75);line-height:1.7;">Strong <strong style="color:white;">H3 (habit hook)</strong> signal — and a sharper version of it: the reminder existed but was <em>generic and mistimed</em>. Not "no reminder," but "wrong reminder." Killed my assumption that just lifting reminder opt-in would help.</p>
+        </div>
+      </div>
+      <!-- DANIEL -->
+      <div class="panel" data-panel="1">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:24px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;">Daniel — quit on day 1</div>
+          <span class="tag-sim" style="color:var(--pink);">never finished the first session</span>
+        </div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--pink);">"I opened it and there were all these categories — sleep, focus, anxiety, courses. I didn't know if I was a 'sleep' person or a 'focus' person. I just closed it."</div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--pink);">"I'm not great with apps. I wanted it to just… tell me what to do for five minutes."</div>
+        <div style="background:rgba(255,107,138,0.1);border-radius:14px;padding:18px 20px;margin-top:8px;">
+          <div class="mono" style="color:var(--pink);margin-bottom:6px;">WHAT IT MOVED</div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.75);line-height:1.7;">Textbook <strong style="color:white;">H1 (overwhelm)</strong> — and from exactly the user the audit's pool was missing. The redesign added a richer picker; for a low-fluency beginner that's <em>more</em> choice, not less. He never got far enough to have an opinion on session length.</p>
+        </div>
+      </div>
+      <!-- PRIYA -->
+      <div class="panel" data-panel="2">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:24px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;">Priya — quit on day 6</div>
+          <span class="tag-sim" style="color:var(--yellow);">busy, sampled a lot, committed to nothing</span>
+        </div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--yellow);">"Ten minutes between lectures is a lot. I'd see the session was ten minutes and think 'not right now' — and 'not right now' just became never."</div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--yellow);">"If there'd been a three-minute one I'd have done it standing at the bus stop."</div>
+        <div style="background:rgba(255,229,102,0.1);border-radius:14px;padding:18px 20px;margin-top:8px;">
+          <div class="mono" style="color:var(--yellow);margin-bottom:6px;">WHAT IT MOVED</div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.75);line-height:1.7;">Cleanest <strong style="color:white;">H2 (session length)</strong> evidence — and it links to H3. The 10-minute default isn't just "too long," it's a <em>commitment barrier</em> that kills the casual re-open. Length and habit are the same wound.</p>
+        </div>
+      </div>
+      <!-- TOM -->
+      <div class="panel" data-panel="3">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:24px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;">Tom — quit at trial end, day 7</div>
+          <span class="tag-sim" style="color:var(--green);">actually liked it — still didn't pay</span>
+        </div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--green);">"I'd done maybe four sessions. I liked it. But paying felt like committing to a whole lifestyle I wasn't sure about yet. So I let it lapse."</div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--green);">"It wasn't the money. It was — I hadn't proven to myself I'd actually keep doing it."</div>
+        <div style="background:rgba(94,243,140,0.1);border-radius:14px;padding:18px 20px;margin-top:8px;">
+          <div class="mono" style="color:var(--green);margin-bottom:6px;">WHAT IT MOVED</div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.75);line-height:1.7;">Complicated <strong style="color:white;">H4 (trial)</strong>. The trial clock wasn't the villain — <em>insufficient habit</em> was. He didn't lack value; he lacked proof to himself that he'd stick. That reframes "trial too short" into "no felt streak before the ask."</p>
+        </div>
+      </div>
+      <!-- SARAH -->
+      <div class="panel" data-panel="4">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px;margin-bottom:24px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:white;">Sarah — quit on day 2</div>
+          <span class="tag-sim" style="color:var(--lav);">night-shift nurse, wanted help sleeping</span>
+        </div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--lav);">"I came for sleep. But the first thing it pushed was a 7-day 'beginner course' — I didn't want a course, I wanted to fall asleep that night."</div>
+        <div class="quote-line" style="color:rgba(255,255,255,0.92);border-color:var(--lav);">"It felt like homework. I've got enough homework."</div>
+        <div style="background:rgba(184,160,255,0.1);border-radius:14px;padding:18px 20px;margin-top:8px;">
+          <div class="mono" style="color:var(--lav);margin-bottom:6px;">WHAT IT MOVED</div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.75);line-height:1.7;">A new thread the audit never named: <strong style="color:white;">intent mismatch</strong>. The flow funnels everyone into a generic "beginner journey" regardless of why they came. Reinforces H1 but adds a <em>cause</em> — overwhelm isn't just volume, it's irrelevance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SYNTHESIS -->
+<section data-screen-label="Synthesis" style="padding:100px 48px;background:var(--lav-pale);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div>
+        <div class="mono reveal" style="color:var(--pink);margin-bottom:10px;">WEEK 1 FRI → WEEK 2 MON</div>
+        <h2 class="reveal section-title">What the five <span class="stroke-ink">agreed on</span></h2>
+      </div>
+      <span class="reveal scribble">affinity-mapped, then pressure-tested ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;max-width:780px;margin-bottom:44px;">I clustered every quote into themes, then asked the uncomfortable question of each: <em>how many of the five, and is it the same thing or am I lumping?</em> Two hypotheses got <strong style="color:var(--ink);">stronger and sharper</strong>, one got <strong style="color:var(--ink);">absorbed into another</strong>, and one <strong style="color:var(--ink);">collapsed</strong>.</p>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="reveal card-light" style="display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--green);">H3</div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:4px;">The habit hook is failing → <em style="color:var(--green);">CONFIRMED, strongest</em></div>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.65;">4 of 5 named "nothing pulled me back." But it sharpened: the problem isn't <em>missing</em> reminders, it's <em>generic, mistimed</em> ones, plus no felt momentum. Maya, Priya and Tom are all really this.</p>
+        </div>
+        <div class="mono" style="color:var(--green);white-space:nowrap;">4 / 5</div>
+      </div>
+      <div class="reveal card-light" style="display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--lav);">H1</div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:4px;">Onboarding overwhelm → <em style="color:var(--lav);">CONFIRMED + re-caused</em></div>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.65;">Daniel and Sarah, the two low-fluency beginners. But the cause isn't "too many sessions" — it's <strong style="color:var(--ink);">choice without intent</strong>. The app asks you to self-classify before it's earned the right to. The redesign moved the overwhelm; it didn't remove it.</p>
+        </div>
+        <div class="mono" style="color:var(--lav);white-space:nowrap;">2 / 5</div>
+      </div>
+      <div class="reveal card-light" style="display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#a68a00;">H2</div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--ink);margin-bottom:4px;">Session length mismatch → <em style="color:#a68a00;">CONFIRMED, folds into H3</em></div>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.65;">Real (Priya, glancingly Sarah) — but it's not a standalone cause. The 10-minute default is a <em>commitment barrier</em> that feeds the habit failure. I'd treat it as a lever <em>under</em> H3, not its own workstream.</p>
+        </div>
+        <div class="mono" style="color:#a68a00;white-space:nowrap;">2 / 5</div>
+      </div>
+      <div class="reveal" style="background:var(--ink);border-radius:20px;padding:32px;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:var(--pink);text-decoration:line-through;text-decoration-thickness:3px;">H4</div>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:white;margin-bottom:4px;">The trial expires too early → <em style="color:var(--pink);">DID NOT HOLD</em></div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.6);line-height:1.65;">The one that broke. Tom — my clearest "trial" user — told me plainly it <em>wasn't</em> the clock or the money. It was that he hadn't built enough habit to believe he'd continue. "Trial too short" was a symptom I'd mistaken for a cause. Lengthening the trial would treat the wrong thing. <strong style="color:white;">Killing this is the most useful thing the interviews did.</strong></p>
+        </div>
+        <div class="mono" style="color:var(--pink);white-space:nowrap;">0 / 5</div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:28px;background:white;border-radius:20px;padding:32px;border:1px solid rgba(0,0,0,0.06);">
+      <div style="font-family:'Caveat',cursive;font-size:16px;color:var(--lav);margin-bottom:10px;">✦ the one sentence the synthesis produced</div>
+      <p style="font-family:'Playfair Display',serif;font-size:clamp(1.2rem,2.4vw,1.7rem);font-weight:700;color:var(--ink);line-height:1.4;">Beginners don't churn because the trial is short or the content is thin — they churn because nothing builds momentum in the first three days, and the app makes them choose who they are before it's earned a single minute of trust.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK 2 · SURVEY -->
+<section data-screen-label="The survey" style="padding:100px 48px;background:var(--cream);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div>
+        <div class="mono reveal" style="color:var(--pink);margin-bottom:10px;">WEEK 2 · TUE–THU</div>
+        <h2 class="reveal section-title">Now, <span class="stroke-ink">how many?</span></h2>
+      </div>
+      <span class="reveal scribble">interviews found the why — the survey sized it ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:var(--muted);line-height:1.8;max-width:780px;margin-bottom:40px;">With real themes in hand, the survey finally had something worth asking. Fielded to <strong style="color:var(--ink);">16 recently-churned beginners</strong> (Priya's growth pull got us past the thin pool). Small-n, so I read it as <em>directional</em>, not significant — the job is to check the interview themes aren't a five-person fluke, and to rank them.</p>
+
+    <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:16px;align-items:start;">
+      <div class="reveal" style="background:white;border-radius:20px;padding:34px;border:1px solid rgba(0,0,0,0.06);">
+        <div class="mono" style="color:var(--ink);margin-bottom:22px;">"WHAT MOST DESCRIBES WHY YOU STOPPED?" · pick all that apply · n=16</div>
+        <div class="bar-row"><div class="bar-label">"I just forgot / fell out of the habit"</div><div class="bar-track"><div class="bar-fill" style="width:81%;background:var(--green);">81%</div></div></div>
+        <div class="bar-row"><div class="bar-label">"Didn't know where to start / too many choices"</div><div class="bar-track"><div class="bar-fill" style="width:63%;background:var(--lav);">63%</div></div></div>
+        <div class="bar-row"><div class="bar-label">"Sessions felt too long to fit in"</div><div class="bar-track"><div class="bar-fill" style="width:56%;background:#d4a800;">56%</div></div></div>
+        <div class="bar-row"><div class="bar-label">"What it offered didn't match why I came"</div><div class="bar-track"><div class="bar-fill" style="width:44%;background:var(--lav);">44%</div></div></div>
+        <div class="bar-row" style="margin-bottom:0;"><div class="bar-label">"Trial ended before I was ready to pay"</div><div class="bar-track"><div class="bar-fill" style="width:19%;background:var(--pink);">19%</div></div></div>
+        <p style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:18px;font-style:italic;">The trial reason came dead last — consistent with Tom. The interviews didn't just describe the problem, they predicted the ranking.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div class="reveal" style="background:var(--ink);border-radius:20px;padding:28px;">
+          <div class="mono" style="color:var(--yellow);margin-bottom:14px;">A QUESTION ONLY THE SURVEY COULD ANSWER</div>
+          <p style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.7;margin-bottom:18px;">"On which day did you stop opening the app?"</p>
+          <div style="display:flex;align-items:flex-end;gap:8px;height:120px;">
+            <div style="flex:1;text-align:center;"><div style="background:var(--pink);height:88px;border-radius:6px 6px 0 0;"></div><div class="mono" style="color:rgba(255,255,255,0.6);margin-top:6px;font-size:10px;">D1–2</div></div>
+            <div style="flex:1;text-align:center;"><div style="background:var(--lav);height:108px;border-radius:6px 6px 0 0;"></div><div class="mono" style="color:rgba(255,255,255,0.6);margin-top:6px;font-size:10px;">D3–4</div></div>
+            <div style="flex:1;text-align:center;"><div style="background:rgba(255,255,255,0.25);height:42px;border-radius:6px 6px 0 0;"></div><div class="mono" style="color:rgba(255,255,255,0.6);margin-top:6px;font-size:10px;">D5–7</div></div>
+            <div style="flex:1;text-align:center;"><div style="background:rgba(255,255,255,0.15);height:26px;border-radius:6px 6px 0 0;"></div><div class="mono" style="color:rgba(255,255,255,0.6);margin-top:6px;font-size:10px;">D8+</div></div>
+          </div>
+          <p style="font-size:12.5px;color:rgba(255,255,255,0.55);line-height:1.6;margin-top:16px;"><strong style="color:white;">81% are gone by day 4.</strong> The retention battle is won or lost in the first three sessions — which is exactly where to aim the fix.</p>
+        </div>
+        <div class="reveal" style="background:var(--green);border-radius:20px;padding:24px;">
+          <div class="mono" style="color:var(--ink);margin-bottom:8px;opacity:0.7;">CONVERGENCE CHECK</div>
+          <p style="font-size:14px;color:var(--ink);line-height:1.65;font-weight:500;">Qual and quant point the same way. When five conversations and sixteen surveys agree on the ranking <em>and</em> the timing, I can hand Product a direction with real confidence.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEEK 3 · RECOMMENDATIONS -->
+<section data-screen-label="Recommendations" style="padding:100px 48px;background:var(--yellow);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div>
+        <div class="mono reveal" style="color:#a68a00;margin-bottom:10px;">WEEK 3 · MON–TUE</div>
+        <h2 class="reveal section-title">What I told them <span class="stroke-ink">to do</span></h2>
+      </div>
+      <span class="reveal scribble">ranked by evidence, scoped to research's lane ✦</span>
+    </div>
+    <p class="reveal" style="font-size:16px;color:var(--ink);line-height:1.7;max-width:760px;margin-bottom:44px;opacity:0.8;">Four recommendations, each tied to a finding and a confidence level — and each a <em>direction for design to explore</em>, not a spec I'm handing down. Note what's <strong>not</strong> here: "extend the trial." The evidence retired it, so I retired it, even though it was the PM's instinct.</p>
+
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="reveal" style="background:white;border-radius:20px;padding:30px;border:1px solid rgba(0,0,0,0.06);display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;font-style:italic;color:var(--green);line-height:1;">01</div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Build a 3-day momentum arc, not a content library.</div>
+            <span class="chip" style="background:var(--green);color:var(--ink);font-size:11px;">HIGH confidence</span>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;">The first three days should be a designed sequence with a felt sense of progress — short sessions, a visible streak, a smart day-2 nudge timed to <em>when the user actually meditated</em>, not 8am default. Addresses the 81%-by-day-4 cliff and the strongest theme. <strong style="color:var(--ink);">This is the headline.</strong></p>
+        </div>
+      </div>
+      <div class="reveal" style="background:white;border-radius:20px;padding:30px;border:1px solid rgba(0,0,0,0.06);display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;font-style:italic;color:var(--lav);line-height:1;">02</div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Replace "pick a category" with "tell me why you're here."</div>
+            <span class="chip" style="background:var(--lav);color:white;font-size:11px;">HIGH confidence</span>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;">One intent question (sleep / stress / focus) that routes to <em>one obvious first session</em> — not a library to self-navigate. Fixes both the overwhelm (Daniel) and the intent-mismatch (Sarah) the redesign introduced.</p>
+        </div>
+      </div>
+      <div class="reveal" style="background:white;border-radius:20px;padding:30px;border:1px solid rgba(0,0,0,0.06);display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;font-style:italic;color:#d4a800;line-height:1;">03</div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Make the first session 2–3 minutes, by default.</div>
+            <span class="chip" style="background:#ffe566;color:#7a5e00;font-size:11px;border:1px solid #d4a800;">MEDIUM confidence</span>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;">Lower the commitment barrier so "not right now" doesn't become "never" (Priya). Medium, not high — it's a lever under recommendation 01, and I'd want design to A/B the default rather than assume the number.</p>
+        </div>
+      </div>
+      <div class="reveal" style="background:rgba(26,10,20,0.06);border-radius:20px;padding:30px;border:1px dashed var(--muted);display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:start;">
+        <div style="font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;font-style:italic;color:var(--muted);line-height:1;">04</div>
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--ink);">Don't touch the trial yet — re-time the <em>ask</em>, not the clock.</div>
+            <span class="chip" style="background:white;color:var(--muted);font-size:11px;border:1px solid var(--muted);">EXPLICIT NON-ACTION</span>
+          </div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;">The data killed "extend the trial." If 01 works and beginners build a streak, the paywall lands on proof, not a calendar — solving Tom's real objection. I flagged this <em>as a deliberate non-recommendation</em> so the team doesn't quietly re-add it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HANDOFF -->
+<section data-screen-label="The handoff" style="padding:100px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <div>
+        <div class="mono reveal" style="color:var(--lav);margin-bottom:10px;">WEEK 3 · WED</div>
+        <h2 class="reveal" style="font-family:'Playfair Display',serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:900;line-height:1;color:white;">The <span class="stroke-white">Handoff</span></h2>
+      </div>
+      <span class="reveal" style="font-family:'Caveat',cursive;font-size:18px;color:rgba(255,255,255,0.35);transform:rotate(-2deg);display:inline-block;">two audiences, two artifacts, one ending ✦</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="reveal" style="background:rgba(255,107,138,0.08);border:1px solid rgba(255,107,138,0.2);border-radius:20px;padding:30px;">
+        <div class="mono" style="color:var(--pink);margin-bottom:12px;">FOR ROHAN · PM — the deck</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:white;margin-bottom:16px;">Six slides, decision-first</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--pink);font-size:11px;">01</span>The drop in one number, the cause in one sentence</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--pink);font-size:11px;">02</span>The day-4 cliff chart</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--pink);font-size:11px;">03</span>Four recommendations, ranked</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--pink);font-size:11px;">04</span>"Why we're NOT extending the trial"</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--pink);font-size:11px;">05</span>What to test first &amp; how we'll know</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--pink);font-size:11px;">06</span>Verbatims that make it human</div>
+        </div>
+      </div>
+      <div class="reveal" style="background:rgba(184,160,255,0.08);border:1px solid rgba(184,160,255,0.2);border-radius:20px;padding:30px;">
+        <div class="mono" style="color:var(--lav);margin-bottom:12px;">FOR JORDAN · DIRECTOR — the report</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:white;margin-bottom:16px;">Full method &amp; confidence</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--lav);font-size:11px;">·</span>Audit → interviews → survey, and why that order</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--lav);font-size:11px;">·</span>Sample, quotas, and the young-skew I corrected for</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--lav);font-size:11px;">·</span>The hypothesis that died, and what killed it</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--lav);font-size:11px;">·</span>Confidence per finding (n=5 qual + n=16 quant)</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--lav);font-size:11px;">·</span>Limitations: small-n, churned-only, no channel split</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;padding-left:22px;position:relative;"><span style="position:absolute;left:0;font-family:var(--mono);color:var(--lav);font-size:11px;">·</span>The open question handed to the data analyst</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- limitations honesty -->
+    <div class="reveal" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;">
+      <div style="font-family:'Caveat',cursive;font-size:16px;color:var(--yellow);margin-bottom:16px;">✦ what I said out loud about the limits</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+        <div><div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">Small, directional sample</div><p style="font-size:12.5px;color:rgba(255,255,255,0.55);line-height:1.65;">5 + 16 finds and ranks themes; it does not give statistical significance. I reported percentages as signal, not proof.</p></div>
+        <div><div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">Churned-only voices</div><p style="font-size:12.5px;color:rgba(255,255,255,0.55);line-height:1.65;">I talked to people who left. To know what makes beginners <em>stay</em>, the next round needs retained users too.</p></div>
+        <div><div style="font-size:14px;color:white;font-weight:600;margin-bottom:6px;">The regression is still open</div><p style="font-size:12.5px;color:rgba(255,255,255,0.55);line-height:1.65;">My qual is consistent with the redesign causing it — but only the analyst's channel-split can rule out an acquisition shift.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REFLECTION / CLOSE -->
+<section data-screen-label="Reflection" style="padding:100px 48px;background:var(--lav-pale);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-header">
+      <h2 class="reveal section-title">Running it <span class="stroke-ink">taught me</span></h2>
+      <span class="reveal scribble">the parts the plan couldn't predict ✦</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="reveal card-light" style="border-left:4px solid var(--pink);">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">The best finding killed my own hypothesis.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">"Extend the trial" was the obvious, PM-friendly answer — and it was wrong. Tom's interview retired it. The discipline that mattered was reporting that <em>against</em> my own and Rohan's prior, and making the non-recommendation as loud as the recommendations.</p>
+      </div>
+      <div class="reveal card-light">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">The quota saved the study.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">Daniel and Sarah — the two low-fluency beginners I deliberately recruited — carried the entire overwhelm finding. Had I let the pool skew young and app-fluent like it wanted to, I'd have missed the strongest H1 evidence completely.</p>
+      </div>
+      <div class="reveal card-light">
+        <div style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px;">Synthesis is where the value is made.</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">The raw interviews gave me four themes. The <em>work</em> was realizing H2 and H4 weren't peers of H3 — one folds in, one collapses. Collapsing four findings into one sentence is what made the recommendation rank-able.</p>
+      </div>
+      <div class="reveal" style="background:var(--ink);color:white;border-radius:20px;padding:32px;">
+        <div style="font-family:'Caveat',cursive;font-size:15px;color:var(--yellow);margin-bottom:12px;">✦ the ending the plan set up</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;color:white;margin-bottom:12px;line-height:1.35;">Three weeks bought Product a direction they could trust — and one expensive idea they were spared from building.</div>
+        <p style="font-size:13.5px;color:rgba(255,255,255,0.6);line-height:1.7;">Whether the momentum arc moves D30 is for design to build and an A/B test to settle. Research's job was to make sure they build the right thing. On a simulated run, that's exactly where it landed.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:36px;text-align:center;">
+      <a href="#top" onclick="showView('plan');return false;" style="background:var(--ink);color:white;font-weight:700;font-size:15px;padding:16px 36px;border-radius:100px;text-decoration:none;box-shadow:4px 4px 0 var(--pink);transition:transform 0.2s,box-shadow 0.2s;display:inline-block;">← re-read the plan</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<section style="padding:60px 48px;background:var(--ink);">
+  <div style="max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;">
+    <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;font-style:italic;color:white;">D<span style="color:var(--pink);">.</span></div>
+    <div style="font-family:'Caveat',cursive;font-size:16px;color:rgba(255,255,255,0.4);">simulated case study · part two · 2026</div>
+  </div>
+</section>
+</div>
+
+<script>
+  const cursor = document.querySelector('.cursor');
+  const ring = document.querySelector('.cursor-ring');
+  if (cursor && ring) {
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.transform=`translate(${mx-7}px,${my-7}px)`; });
+    function loop(){ rx+=(mx-rx)*0.15; ry+=(my-ry)*0.15; ring.style.transform=`translate(${rx-19}px,${ry-19}px)`; requestAnimationFrame(loop); }
+    loop();
+  }
+  const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }); }, {threshold:0.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  const tabs = document.querySelectorAll('.person-tab');
+  const panels = document.querySelectorAll('.panel');
+  const tabBgs = ['var(--lav-pale)','var(--pink-pale)','#fff6d6','#e3fbe9','var(--lav-pale)'];
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    const i = +tab.dataset.p;
+    tabs.forEach(t => { t.classList.remove('active'); t.style.background='white'; });
+    tab.classList.add('active'); tab.style.background = tabBgs[i];
+    panels.forEach(p => p.classList.toggle('active', +p.dataset.panel === i));
+  }));
+
+  function showView(which){
+    const isPlan = which === 'plan';
+    document.getElementById('view-plan').classList.toggle('active', isPlan);
+    document.getElementById('view-run').classList.toggle('active', !isPlan);
+    document.getElementById('tab-plan').classList.toggle('active', isPlan);
+    document.getElementById('tab-run').classList.toggle('active', !isPlan);
+    const active = document.getElementById(isPlan ? 'view-plan' : 'view-run');
+    active.querySelectorAll('.reveal').forEach(el=>el.classList.add('visible'));
+    window.scrollTo({top:0,behavior:'auto'});
+    try{ localStorage.setItem('medcase-view', which); }catch(e){}
+  }
+  window.showView = showView;
+  try{ const saved = localStorage.getItem('medcase-view'); if(saved==='run') showView('run'); }catch(e){}
+</script>
+</body>
+</html>
